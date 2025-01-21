@@ -1,10 +1,35 @@
 const { User } = require('../models');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const SALT_ROUNDS = 10;
 
 const UserController = {
   async register(req, res) {
     try {
-      const user = await User.create(req.body);
-      res.status(201).json(user);
+      const { username, email, password } = req.body;
+
+      // Hash de la contraseña (refactorizar)
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+      
+      const user = await User.create({
+        username,
+        email,
+        password: hashedPassword
+      });
+
+      // Generamos el token JWT (refactorizar)
+      const token = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      const { password: _, ...userWithoutPassword } = user.toJSON();
+      res.status(201).json({
+        user: userWithoutPassword,
+        token
+      });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -15,11 +40,28 @@ const UserController = {
       const { email, password } = req.body;
       const user = await User.findOne({ where: { email } });
       
-      if (!user || user.password !== password) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+      if (!user) {
+        return res.status(401).json({ error: 'Credenciales inválidad' });
       }
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
       
-      res.json(user);
+      if (!isValidPassword) {
+        return res.status(401).json({ error: 'Credenciales inválidas' });
+      }
+
+      // Generamos el token JWT (refactorizar)
+      const token = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+      
+      const { password: _, ...userWithoutPassword } = user.toJSON();
+      res.json({
+        user: userWithoutPassword,
+        token
+      });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -29,9 +71,10 @@ const UserController = {
     try {
       const user = await User.findByPk(req.params.id);
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: 'Usuario no encontrado' });
       }
-      res.json(user);
+      const { password: _, ...userWithoutPassword } = user.toJSON();
+      res.json(userWithoutPassword);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
