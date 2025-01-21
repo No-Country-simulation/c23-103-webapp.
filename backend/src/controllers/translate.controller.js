@@ -3,7 +3,6 @@ const { translateMessage: translate } = require('../services/Translate.service')
 const TranslateController = {
     async translateMessage (req, res) {
         try {
-          console.log("controlador")
           const { content, targetLanguage } = req.body;
           const translation = await translate(content, targetLanguage);
           res.status(200).json({ translation });

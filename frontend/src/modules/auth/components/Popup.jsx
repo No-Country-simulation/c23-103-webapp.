@@ -41,9 +41,10 @@ export const Popup = ({ onClose, success, UserId, formType }) => {
 
   const handleButtonClick = async () => {
     if (success) {
-      await axios.get(`${import.meta.env.VITE_API_BASE}/users/dashboard`, {
-        params: { userId: UserId },
-      });
+      //! TODO no entiendo la necesidad de esto
+      // await axios.get(`${process.env.REACT_APP_API_BASE}/users/dashboard`, {
+      //   params: { userId: UserId },
+      // });
       localStorage.setItem("userId", UserId);
       navigate("/dashboard");
     } else {

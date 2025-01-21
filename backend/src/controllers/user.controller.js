@@ -8,7 +8,12 @@ const UserController = {
   async register(req, res) {
     try {
       const { username, email, password } = req.body;
-
+      
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ error: 'El usuario ya existe' });
+      }
+      
       // Hash de la contraseña (refactorizar)
       const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
       
@@ -17,14 +22,14 @@ const UserController = {
         email,
         password: hashedPassword
       });
-
+      
       // Generamos el token JWT (refactorizar)
       const token = jwt.sign(
         { id: user.id, email: user.email },
         process.env.JWT_SECRET,
         { expiresIn: '24h' }
       );
-
+      
       const { password: _, ...userWithoutPassword } = user.toJSON();
       res.status(201).json({
         user: userWithoutPassword,

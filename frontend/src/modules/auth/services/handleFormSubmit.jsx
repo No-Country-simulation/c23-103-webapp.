@@ -5,12 +5,12 @@ export const handleFormSubmit = async (values, formType) => {
     let userId = 0;
     if (formType === "register") {
       try {
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_API_BASE}/users/register`,
+        const { data }  = await axios.post(
+          `${process.env.REACT_APP_API_BASE}/users/register`,
           {
-            Name: values.name,
-            Email: values.email,
-            Password: values.password,
+            username: values.name,
+            email: values.email,
+            password: values.password,
           },
           {
             headers: {
@@ -18,20 +18,20 @@ export const handleFormSubmit = async (values, formType) => {
             },
           }
         );
-        userId = data.res.UserId;
+        userId = data.user.id;
         localStorage.setItem("userId", userId);
-        localStorage.setItem("userName", data.res.Name);
+        localStorage.setItem("userName", data.user.username);
       } catch (error) {
-        return { success: false, message: error };
+        return { success: false, message: error.response.data.error };
       }
       return { success: true, userId };
     } else if (formType === "login") {
       try {
         const res = await axios.post(
-          `${import.meta.env.VITE_API_BASE}/users/login`,
+          `${process.env.REACT_APP_API_BASE}/users/login`,
           {
-            Email: values.email,
-            Password: values.password,
+            email: values.email,
+            password: values.password,
           },
           {
             headers: {
@@ -39,8 +39,9 @@ export const handleFormSubmit = async (values, formType) => {
             },
           }
         );
-        userId = res.data.userId;
-        localStorage.setItem("userName", res.data.nameUser);
+        //! TODO: se debe guardar el token para mantener la sesion activa res.data.token
+        userId = res.data.user.id;
+        localStorage.setItem("userName", res.data.user.username);
       } catch (error) {
         return { success: false, message: error };
       }
