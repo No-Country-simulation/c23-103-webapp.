@@ -6,9 +6,12 @@ import {
 } from "react-router-dom";
 
 import { RegisterPage } from "./modules/auth/pages/RegisterPage";
-import { LoginPage } from "./modules/auth/pages/LoginPage";
+import { LoginPage } from "./modules/auth/pages/LoginPage"; 
+import { ChatPage } from "./modules/message/pages/ChatPage";
+import { ConversationListPage } from "./modules/message/pages/ConversationListPage";
 
 function App() {
+  // Configuración de rutas
   const routes = [
     {
       path: "/login",
@@ -17,6 +20,14 @@ function App() {
     {
       path: "/register",
       element: <RegisterPage />,
+    },
+    {
+      path: "/chats",
+      element: <ConversationListPage />,
+    },
+    {
+      path: "/chats/:conversationId",
+      element: <ChatPage />,
     },
     {
       path: "*",

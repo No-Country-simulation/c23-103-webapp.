@@ -7,6 +7,7 @@ const SALT_ROUNDS = 10;
 const UserController = {
   async register(req, res) {
     try {
+      console.log(req.body)
       const { username, email, password } = req.body;
       
       const existingUser = await User.findOne({ where: { email } });

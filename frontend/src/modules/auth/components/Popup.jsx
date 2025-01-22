@@ -5,7 +5,6 @@ import ErrorIcon from "../../../assets/error.svg";
 
 export const Popup = ({ onClose, success, UserId, formType }) => {
   const navigate = useNavigate();
-  console.log("%c success :", "background-color:#192BC2", success);
   const getTag = () => {
     if (success) {
       return formType === "login"
@@ -21,8 +20,8 @@ export const Popup = ({ onClose, success, UserId, formType }) => {
   const getMessage = () => {
     if (success) {
       return formType === "login"
-        ? "Has ingresado correctamente a FinanzApp. ¡Es hora de gestionar tus finanzas!"
-        : "Bienvenido/a a FinanzApp, ahora puedes empezar a gestionar tus finanzas y sucursales de forma eficiente.";
+        ? "Has ingresado correctamente a tu cuenta. ¡Comencemos a chatear!"
+        : "Bienvenido/a a Lumin, ahora puedes empezar a chatear con tus amigos.";
     } else {
       return formType === "login"
         ? "No pudimos iniciar sesión. Por favor, verifica tu correo electrónico y contraseña."
@@ -40,12 +39,8 @@ export const Popup = ({ onClose, success, UserId, formType }) => {
 
   const handleButtonClick = async () => {
     if (success) {
-      //! TODO no entiendo la necesidad de esto
-      // await axios.get(`${process.env.REACT_APP_API_BASE}/users/dashboard`, {
-      //   params: { userId: UserId },
-      // });
       localStorage.setItem("userId", UserId);
-      navigate("/dashboard");
+      navigate("/chats");
     } else {
       onClose();
     }
@@ -63,7 +58,7 @@ export const Popup = ({ onClose, success, UserId, formType }) => {
           onClick={handleButtonClick}
           className="w-button-medium bg-primary text-white py-buttonPadding rounded-2xl hover:bg-primary-dark transition duration-300"
         >
-          {success ? "Ir al Panel" : "Intentar de nuevo"}
+          {success ? "Ir a tu cuenta" : "Intentar nuevamente"}
         </button>
       </div>
     </div>
