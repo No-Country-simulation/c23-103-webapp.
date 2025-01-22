@@ -104,6 +104,6 @@ Este proyecto está bajo la licencia **MIT**. Consulta el archivo `LICENSE` para
 
 ## **Contacto**
 Para preguntas o comentarios, puedes contactar a los desarrolladores:
-- **David Nazariego**: [Correo electrónico o LinkedIn]
-- **Miguel Aponte**: [Correo electrónico o LinkedIn]
+- **David Nazariego**: [https://www.linkedin.com/in/nazariego/]
+- **Miguel Aponte**: [https://www.linkedin.com/in/dante-aponte/]
 

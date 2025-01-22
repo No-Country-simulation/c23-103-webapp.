@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import SuccessIcon from "../../../assets/succes.svg";
 import ErrorIcon from "../../../assets/error.svg";
-import axios from "axios";
 
 export const Popup = ({ onClose, success, UserId, formType }) => {
   const navigate = useNavigate();
