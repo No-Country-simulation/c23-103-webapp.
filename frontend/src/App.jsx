@@ -6,9 +6,13 @@ import {
 } from "react-router-dom";
 
 import { RegisterPage } from "./modules/auth/pages/RegisterPage";
-import { LoginPage } from "./modules/auth/pages/LoginPage"; 
-import { ChatPage } from "./modules/message/pages/ChatPage";
-import { ConversationListPage } from "./modules/message/pages/ConversationListPage";
+import { LoginPage } from "./modules/auth/pages/LoginPage";
+
+import { ChatsPage } from "./modules/message/pages/ChatsPage";
+import { UserChat } from "./modules/message/pages/UserChat";
+import { StatusPage } from "./modules/message/pages/StatusPage";
+import { CallsPage } from "./modules/message/pages/CallsPage";
+import { SettingsPage } from "./modules/message/pages/SettingsPage";
 
 function App() {
   // Configuración de rutas
@@ -23,11 +27,27 @@ function App() {
     },
     {
       path: "/chats",
-      element: <ConversationListPage />,
+      element: <ChatsPage />,
     },
     {
       path: "/chats/:conversationId",
-      element: <ChatPage />,
+      element: <UserChat />,
+    },
+    {
+      path: "/StatusPage",
+      element: <StatusPage />,
+    },
+    {
+      path: "/CallsPage",
+      element: <CallsPage />,
+    },
+    {
+      path: "/ChatsPage",
+      element: <ChatsPage />,
+    },
+    {
+      path: "/SettingsPage",
+      element: <SettingsPage />,
     },
     {
       path: "*",
@@ -37,11 +57,15 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        {routes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
-      </Routes>
+      <div>
+        <Routes>
+          {routes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Routes>
+
+        {/* Mostrar el navbar en todas las páginas excepto la de login o registro */}
+      </div>
     </Router>
   );
 }

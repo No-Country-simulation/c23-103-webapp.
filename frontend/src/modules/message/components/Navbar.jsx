@@ -1,14 +1,18 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import status from "../../../assets/status.svg"; // Asegúrate de que la ruta sea correcta
+import calls from "../../../assets/calls.svg"; // Asegúrate de que la ruta sea correcta
+import settings from "../../../assets/settings.svg"; // Asegúrate de que la ruta sea correcta
+import chats from "../../../assets/chats.svg"; // Asegúrate de que la ruta sea correcta
 
-export const ChatNavbar = () => {
+export const Navbar = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/chats", label: "Chats", icon: "💬" },
-    { path: "/status", label: "Estado", icon: "📜" },
-    { path: "/calls", label: "Llamadas", icon: "📞" },
-    { path: "/settings", label: "Ajustes", icon: "⚙️" },
+    { path: "/StatusPage", label: "Status", icon: status }, // Usamos la imagen directamente
+    { path: "/CallsPage", label: "Calls", icon: calls },
+    { path: "/ChatsPage", label: "Chats", icon: chats },
+    { path: "/SettingsPage", label: "Settings", icon: settings },
   ];
 
   return (
@@ -19,10 +23,11 @@ export const ChatNavbar = () => {
             key={item.path}
             to={item.path}
             className={`flex flex-col items-center py-2 text-sm ${
-              location.pathname === item.path ? "text-blue-500" : "text-gray-500"
-            } hover:text-blue-500`}
+              location.pathname === item.path ? "text-violet-700" : "text-gray-400"
+            }`}
           >
-            <span className="text-2xl">{item.icon}</span>
+            {/* Si el icono es una imagen, la mostramos en un <img /> */}
+            <img src={item.icon} alt={item.label} className="w-7 h-8" />
             <span>{item.label}</span>
           </Link>
         ))}

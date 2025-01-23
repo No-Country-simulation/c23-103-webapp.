@@ -47,7 +47,7 @@ export const Popup = ({ onClose, success, UserId, formType }) => {
   };
 
   return (
-    <div className="p-5 w-50 rounded-2xl shadow-md shadow-gray-400">
+    <div className="p-5 w-50">
       <div className="flex justify-center p-7">{getIcon()}</div>
       <span className="block text-primary text-center text-2xl font-medium mb-2">
         {getTag()}

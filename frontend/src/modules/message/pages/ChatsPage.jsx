@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { GroupBar } from "../components/GroupBar"; // Importar el componente de filtros
-import { ChatNavbar } from "../components/Navbar"; // Importar el componente de filtros
+import { Navbar } from "../components/Navbar"; // Importar el componente de filtros
 
-export const ConversationListPage = () => {
+export const ChatsPage = () => {
   // Definir el estado para la búsqueda
   const [searchQuery, setSearchQuery] = useState(""); // Agregar el estado para la búsqueda
   const [filter, setFilter] = useState("todos");
@@ -94,7 +94,7 @@ export const ConversationListPage = () => {
               {/* Información del chat */}
               <div className="flex-grow">
                 <Link
-                  to={`/chats/${conversation.id}`}
+                  to={`/chats/${conversation.name}`}
                   className="flex justify-between text-blue-600 hover:underline"
                 >
                   <span className="font-semibold">{conversation.name}</span>
@@ -143,7 +143,11 @@ export const ConversationListPage = () => {
           <li className="text-gray-500">No se encontraron conversaciones.</li>
         )}
       </ul>
-      <ChatNavbar/>
+      <Navbar/>
     </div>
   );
 };
+
+
+
+

@@ -1,9 +1,10 @@
+
 import React from "react";
 import { useParams } from "react-router-dom";
 import { ChatHeader } from "../components/ChatHeader";
 import { MessageInput } from "../components/MessageInput";
 
-export const ChatPage = () => {
+export const UserChat = () => {
   const { conversationId } = useParams();
 
   return (
