@@ -1,22 +1,23 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate para la redirección
-import QRCode from "react-qr-code"; // Asegúrate de tener instalada la librería react-qr-code
-import { Navbar } from "../components/Navbar"; // Importar el componente de filtros
-
+import { useNavigate } from "react-router-dom";
+import QRCode from "react-qr-code";
+import { Navbar } from "../components/Navbar";
+import { DeleteModal } from "../components/DeleteModal";
 
 export const SettingsPage = () => {
-  const navigate = useNavigate(); // Inicializamos el hook de useNavigate para redirigir
-  // Estados para gestionar los datos
+  const navigate = useNavigate();
+
   const [profilePic, setProfilePic] = useState(
     "https://randomuser.me/api/portraits/men/1.jpg"
   );
   const [name, setName] = useState("Juan Miranda");
+  const [email] = useState("Juanmiranda@gmail.com");
   const [status, setStatus] = useState("Disponible");
   const [password, setPassword] = useState("");
-  const [notifications, setNotifications] = useState(true); // Si las notificaciones están activadas
-  const [showQRCode, setShowQRCode] = useState(false); // Para mostrar el código QR
-
-
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Estado para manejar visibilidad de la contraseña
+  const [showQRCode, setShowQRCode] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -30,118 +31,217 @@ export const SettingsPage = () => {
     setPassword(event.target.value);
   };
 
-  const toggleNotifications = () => {
-    setNotifications(!notifications);
+  const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value);
   };
 
   const toggleQRCode = () => {
     setShowQRCode(!showQRCode);
   };
 
-  // Función para manejar el cierre de sesión
-  const handleLogout = () => {
-    // Aquí puedes agregar la lógica para eliminar la sesión si es necesario
-    navigate("/login"); // Redirige al login
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
+  const handleLogout = () => {
+    navigate("/login");
+  };
+
+  const handleDeleteAccount = () => {
+    console.log("Account deleted"); // Aquí llamas a tu lógica para eliminar la cuenta
+    setDeleteModalOpen(false);
+  };
+
+  // En tu JSX:
+
   return (
-    <div className="max-w-3xl mx-auto p-6 mb-10">
-      <h2 className="text-3xl font-bold mb-4">Configuración</h2>
-
-      {/* Foto de perfil */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Foto de Perfil</h3>
-        <div className="flex items-center">
-          <img
-            src={profilePic}
-            alt="Foto de perfil"
-            className="w-24 h-24 rounded-full object-cover mr-4"
-          />
-         
-        </div>
+    <div className="bg-violet-500 min-h-screen">
+      {/* Banner */}
+      <div className="bg-violet-500 p-8">
+        <h2 className="text-3xl text-white font-bold">Settings</h2>
       </div>
 
-      {/* Nombre */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Nombre</h3>
-        <input
-          type="text"
-          value={name}
-          onChange={handleNameChange}
-          className="w-full p-2 border rounded"
-          placeholder="Ingrese su nombre"
-        />
-      </div>
-
-      {/* Estado */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Estado</h3>
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          className="w-full p-2 border rounded"
-        >
-          <option value="Disponible">Disponible</option>
-          <option value="Ausente">Ausente</option>
-        </select>
-      </div>
-
-      {/* Cambiar contraseña */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Cambiar Contraseña</h3>
-        <input
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-          className="w-full p-2 border rounded"
-          placeholder="Nueva contraseña"
-        />
-      </div>
-
-      {/* Notificaciones de chats */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Notificaciones de Chats</h3>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={notifications}
-            onChange={toggleNotifications}
-            className="mr-2"
-          />
-          Activar Notificaciones
-        </label>
-      </div>
-
-      {/* Botón para mostrar el código QR */}
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Código QR</h3>
-        <button
-          onClick={toggleQRCode}
-          className="bg-blue-500 text-white py-2 px-4 rounded w-full"
-        >
-          {showQRCode ? "Ocultar Código QR" : "Compartir Código QR"}
-        </button>
-
-        {showQRCode && (
-          <div className="mt-4 flex justify-center">
-            <QRCode value={name} size={128} />
+      {/* Contenedor principal */}
+      <div className="bg-white text-violet-900 rounded-3xl p-4 shadow-lg">
+        {/* Perfil */}
+        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+          <h3 className="text-xl font-semibold mb-4">Profile</h3>
+          <div className="flex items-left justify-left mb-4">
+            <img
+              src={profilePic}
+              alt="Foto de perfil"
+              className="w-32 h-32 rounded-2xl object-cover border-violet-500"
+            />
           </div>
-        )}
-      </div>
+          <div className="mb-3">
+            <label
+              className="block text-violet-700 font-medium mb-2"
+              htmlFor="status"
+            >
+              Estado
+            </label>
+            <select
+              id="status"
+              value={status}
+              onChange={handleStatusChange}
+              className="w-full p-4 border rounded-lg shadow-sm"
+            >
+              <option value="Disponible">Available</option>
+              <option value="Away">Away</option>
+              <option value="Busy">Busy</option>
+              <option value="In a meeting">In a meeting</option>
+              <option value="On vacation">On vacation</option>
+            </select>
+          </div>
+        </div>
 
-      {/* Botón para guardar cambios */}
-      <button className="bg-green-500 text-white py-2 px-4 rounded w-full">
-        Guardar Cambios
-      </button>
+        {/* Información del usuario */}
+        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+          <h3 className="text-xl font-semibold mb-4">User Information</h3>
+          <div className="mb-3">
+            <label
+              className="block text-violet-700 font-medium mb-2"
+              htmlFor="name"
+            >
+              Full name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={handleNameChange}
+              className="w-full p-4 border rounded-lg shadow-sm"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div className="mb-3">
+            <label
+              className="block text-violet-700 font-medium mb-2"
+              htmlFor="email"
+            >
+              E-mail
+            </label>
+            <input
+              type="text"
+              id="email"
+              value={email}
+              className="bg-white w-full p-4 border rounded-lg shadow-sm text-gray-400"
+              disabled
+            />
+          </div>
+          <div className="w-50 mt-3 flex items-center justify-center">
+            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100">
+              Update
+            </button>
+          </div>
+        </div>
 
-      {/* Botón para cerrar sesión */}
-      <div className="mt-3">
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white py-2 px-4 rounded w-full"
-        >
-          Cerrar Sesión
-        </button>
+        {/* Configuración de seguridad */}
+        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+          <h3 className="text-xl font-semibold mb-4">Security</h3>
+          <div className="mb-3 relative">
+            <label
+              className="block text-violet-700 font-medium mb-2"
+              htmlFor="password"
+            >
+              Current Password
+            </label>
+            <div className="flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={handlePasswordChange}
+                className="w-full p-4 border rounded-lg shadow-sm"
+                placeholder="Enter your current password"
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3 text-gray-500"
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-3 relative">
+            <label
+              className="block text-violet-700 font-medium mb-2"
+              htmlFor="newpassword"
+            >
+              New Password
+            </label>
+            <div className="flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="newpassword"
+                value={newPassword}
+                onChange={handleNewPasswordChange}
+                className="w-full p-4 border rounded-lg shadow-sm"
+                placeholder="Enter your new password"
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3 text-gray-500"
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
+          </div>
+
+          <div className="w-50 mt-3 flex items-center justify-center">
+            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100">
+              Update
+            </button>
+          </div>
+        </div>
+
+        {/* Código QR */}
+        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+          <h3 className="text-xl font-semibold mb-4">QR Code</h3>
+          <div className="flex items-center justify-center">
+            <button
+              onClick={toggleQRCode}
+              className="bg-violet-500 text-white py-3 px-6 rounded-2xl shadow-lg w-50 mb-4"
+            >
+              {showQRCode ? "Hide QR Code" : "Share QR Code"}
+            </button>
+          </div>
+
+          {showQRCode && (
+            <div className="flex justify-center m-4">
+              <QRCode value={name} size={150} />
+            </div>
+          )}
+        </div>
+
+        <div className="mb-2 flex items-center justify-center">
+          <div className="w-60">
+            <button
+              onClick={() => setDeleteModalOpen(true)}
+              className="bg-violet-900 text-white py-3 px-6 rounded-2xl shadow-lg w-full"
+            >
+              Delete Account
+            </button>
+          </div>
+        </div>
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleDeleteAccount}
+        />
+        <div className="mb-20 flex items-center justify-center">
+          <div className="w-60">
+            <button
+              onClick={handleLogout}
+              className="bg-violet-500 text-white py-3 px-6 rounded-2xl shadow-lg w-full"
+            >
+              Exit
+            </button>
+          </div>
+        </div>
       </div>
 
       <Navbar />
