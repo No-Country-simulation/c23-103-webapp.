@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
-import { GroupBar } from "../components/GroupBar"; // Importar el componente de filtros
-import { Navbar } from "../components/Navbar"; // Importar el componente de filtros
+import { GroupBar } from "../components/GroupBar";
+import { Navbar } from "../components/Navbar";
+import { ChatModal } from "../components/ChatModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 export const ChatsPage = () => {
-  // Definir el estado para la búsqueda
-  const [searchQuery, setSearchQuery] = useState(""); // Agregar el estado para la búsqueda
-  const [filter, setFilter] = useState("todos");
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [openModalId, setOpenModalId] = useState(null);
+  
+  
   //! TODO: este estado gestiona los contactos, podria ser un estado global
   const [conversations, setConversations] = useState([])
+  //! llamamos a los contactos del usuario al cargar la página
   useEffect(() =>{
-    //! llamamos a los contactos del usuario
     const conversations = async () => {
       let token = localStorage.getItem("token")
       const res = await axios.get(`http://localhost:3001/api/conversations/`, {
@@ -71,6 +75,7 @@ export const ChatsPage = () => {
   // ];
 
   // Filtrar las conversaciones según el filtro seleccionado
+
   const filteredConversations = conversations?.filter((conversation) => {
     switch (filter) {
       case "noLeidos":
@@ -88,8 +93,6 @@ export const ChatsPage = () => {
     )
   );
 
-  
-
   //! TODO: manejador de agregar contacto se debe enviar el email del usuario a agregar. esta peticion deberia actualizar la informacion de los contactos y renderizar el nuevo contacto
   const handleAddContact = async ( ) => {
     try {
@@ -106,88 +109,97 @@ export const ChatsPage = () => {
     }
   };
 
+  const handleOpenModal = (id) => {
+    setOpenModalId(id);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModalId(null);
+  };
+
+  const handleAction = (action, id) => {
+    console.log(`Acción: ${action} en chat con ID: ${id}`);
+    handleCloseModal();
+  };
+
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-4">Chats</h2>
+    <div className="bg-violet-500">
+      <div className="bg-violet-500 p-8">
+        <h2 className="text-3xl text-white font-bold">Chats</h2>
+      </div>
 
       {/* //! TODO: Arreglar boton para agregar contactos deberia abrirse un modal que muestre los contactos y un boton de agregar nuevo, ahi colocariamos el mail del usuario a agregar y al confirmar deberia lanzarse handleAddContact*/}
       <button className="bg-cyan-600" onClick={handleAddContact}>AGREGAR(+)</button>
 
-      {/* Barra de búsqueda */}
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
-      {/* Barra de filtros */}
-      <GroupBar onFilterChange={setFilter} />
-
-      {/* Lista de conversaciones */}
-      <ul className="space-y-2">
+      <ul className="bg-white text-gray-900 rounded-t-3xl p-4 mb-10">
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <GroupBar onFilterChange={setFilter} />
         {filteredConversations.length > 0 ? (
           filteredConversations.map((conversation) => (
-            <li key={conversation.id} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
-              {/* Imagen de perfil */}
+            <li
+              key={conversation.id}
+              className="flex items-center p-3 bg-violet-100 rounded-xl shadow-md mb-3"
+            >
               <img
                 src={conversation.profileImage}
                 alt={conversation.name}
-                className="w-10 h-10 rounded-full"
+                className="w-14 h-15 rounded-xl"
               />
-
-              {/* Información del chat */}
-              <div className="flex-grow">
+              <div className="flex-grow ml-4">
                 <Link
                   to={`/chats/${conversation.name}`}
-                  className="flex justify-between text-blue-600 hover:underline"
+                  className="flex justify-between text-violet-900"
                 >
                   <span className="font-semibold">{conversation.Users[0].username}</span>
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-gray-500 text-sm mx-3">
                     {conversation.timestamp}
                   </span>
                 </Link>
+
                 <div className="flex justify-between items-center">
-                  <p className="text-gray-500 text-sm truncate">
+                  <p
+                    className="text-gray-500 text-sm truncate"
+                    style={{
+                      maxWidth: "100px", // Ajusta este valor según el diseño deseado
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    }}
+                    title={conversation.lastMessage} // Muestra el mensaje completo en un tooltip
+                  >
                     {conversation.lastMessage}
                   </p>
                   {conversation.unreadCount > 0 && (
-                    <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    <span className="ml-2 bg-violet-500 text-white text-xs font-bold mx-3 px-2 py-1 rounded-full">
                       {conversation.unreadCount}
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Ícono de eliminar */}
               <button
-                onClick={() => {
-                  console.log(`Eliminar conversación con ID: ${conversation.id}`);
-                }}
-                className="text-red-500 hover:text-red-700"
-                title="Eliminar conversación"
+                onClick={() => handleOpenModal(conversation.id)}
+                className="text-violet-600"
+                title="Options"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <FontAwesomeIcon icon={faAnglesLeft} />
               </button>
             </li>
           ))
         ) : (
-          <li className="text-gray-500">No se encontraron conversaciones.</li>
+          <li className="text-gray-500">No conversations found.</li>
         )}
       </ul>
-      <Navbar/>
+
+      {/* Componente del Modal */}
+      <ChatModal
+        isOpen={!!openModalId}
+        onClose={handleCloseModal}
+        onAction={handleAction}
+        conversationId={openModalId}
+      />
+
+      <Navbar />
     </div>
   );
 };
-
-
-
-
