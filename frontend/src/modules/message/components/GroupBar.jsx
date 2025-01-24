@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 export const GroupBar = ({ onFilterChange }) => {
-  const [selectedFilter, setSelectedFilter] = useState("todos");
+  const [selectedFilter, setSelectedFilter] = useState("all");
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
@@ -9,30 +9,30 @@ export const GroupBar = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="flex space-x-4 bg-white p-4 shadow-md">
+    <div className="flex space-x-4 pb-4">
       <button
-        onClick={() => handleFilterChange("todos")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "todos" ? "bg-blue-500 text-white" : "text-blue-500"}`}
+        onClick={() => handleFilterChange("all")}
+        className={`flex-1 py-2 text-center ${selectedFilter === "all" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
       >
-        Todos
+        All
       </button>
       <button
-        onClick={() => handleFilterChange("noLeidos")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "noLeidos" ? "bg-blue-500 text-white" : "text-blue-500"}`}
+        onClick={() => handleFilterChange("unRead")}
+        className={`flex-1 py-2 text-center ${selectedFilter === "unRead" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
       >
-        No Leídos
+        Unread
       </button>
       <button
-        onClick={() => handleFilterChange("favoritos")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "favoritos" ? "bg-blue-500 text-white" : "text-blue-500"}`}
+        onClick={() => handleFilterChange("favorites")}
+        className={`flex-1 py-2 text-center ${selectedFilter === "favorites" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
       >
-        Favoritos
+        Favorites
       </button>
       <button
-        onClick={() => handleFilterChange("grupos")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "grupos" ? "bg-blue-500 text-white" : "text-blue-500"}`}
+        onClick={() => handleFilterChange("groups")}
+        className={`flex-1 py-2 text-center ${selectedFilter === "groups" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
       >
-        Grupos
+        Groups
       </button>
     </div>
   );

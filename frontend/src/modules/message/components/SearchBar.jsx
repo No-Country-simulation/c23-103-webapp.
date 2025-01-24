@@ -2,13 +2,13 @@ import React from "react";
 
 export const SearchBar = ({ searchQuery, setSearchQuery }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-3">
       <input
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Buscar conversaciones..."
+        className="w-full p-2 border border-violet-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-violet-400"
+        placeholder="Let's find a conversation..."
       />
     </div>
   );
