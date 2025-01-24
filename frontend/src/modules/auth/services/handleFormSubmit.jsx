@@ -21,6 +21,7 @@ export const handleFormSubmit = async (values, formType) => {
         userId = data.user.id;
         localStorage.setItem("userId", userId);
         localStorage.setItem("userName", data.user.username);
+        localStorage.setItem("token", data.token);
       } catch (error) {
         return { success: false, message: error.response.data.error };
       }

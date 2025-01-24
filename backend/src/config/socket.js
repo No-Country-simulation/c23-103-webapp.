@@ -9,7 +9,8 @@ const setupSocket = (server) => {
   });
 
   io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+    const userId = socket.handshake.query.userId;
+    console.log(`Usuario conectado con ID: ${userId}`);
 
     socket.on('join_room', (roomId) => {
       socket.join(roomId);
@@ -21,7 +22,7 @@ const setupSocket = (server) => {
     });
 
     socket.on('disconnect', () => {
-      console.log('User disconnected:', socket.id);
+      console.log('Usuario desconectado:', socket.id);
     });
   });
 
