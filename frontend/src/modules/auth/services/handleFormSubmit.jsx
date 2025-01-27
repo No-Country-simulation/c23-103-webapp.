@@ -28,7 +28,7 @@ export const handleFormSubmit = async (values, formType) => {
       return { success: true, userId };
     } else if (formType === "login") {
       try {
-        const res = await axios.post(
+        const { data } = await axios.post(
           `http://localhost:3001/api/users/login`,
           {
             email: values.email,
@@ -41,8 +41,10 @@ export const handleFormSubmit = async (values, formType) => {
           }
         );
         //! TODO: se debe guardar el token para mantener la sesion activa res.data.token
-        userId = res.data.user.id;
-        localStorage.setItem("userName", res.data.user.username);
+        userId = data.user.id;
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("userName", data.user.username);
+        localStorage.setItem("token", data.token);
       } catch (error) {
         return { success: false, message: error };
       }

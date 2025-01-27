@@ -7,6 +7,7 @@ import { ChatModal } from "../components/ChatModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import AddContactModal from "../components/AddContactModal";
 
 export const ChatsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +17,9 @@ export const ChatsPage = () => {
   
   //! TODO: este estado gestiona los contactos, podria ser un estado global
   const [conversations, setConversations] = useState([])
-  //! llamamos a los contactos del usuario al cargar la página
+  const [contacts, setContacts] = useState([])
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  //! TODO: llamamos a los contactos del usuario al cargar la página, (este useEffect es solo para que funcione por ahora, creo que seria mejor al iniciar sesion traer toda la informacion del usuario con sus contactos y conversaciones y traerlas del estado global)
   useEffect(() =>{
     const conversations = async () => {
       let token = localStorage.getItem("token")
@@ -26,55 +29,15 @@ export const ChatsPage = () => {
         },
       })
       setConversations(res.data.conversations)
+      const contacts = await axios.get(`http://localhost:3001/api/contacts/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setContacts(contacts.data.Contacts)
     };
     conversations()
   },[])
-
-  // Conversaciones de ejemplo
-  // const conversations = [
-  //   {
-  //     id: "1",
-  //     name: "Juan Miranda",
-  //     lastMessage: "Hola, ¿cómo estás?",
-  //     timestamp: "14:35",
-  //     unreadCount: 2,
-  //     isFavorite: false,
-  //     isGroup: false,
-  //     profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Equipo Trabajo",
-  //     lastMessage: "Revisemos el documento.",
-  //     timestamp: "13:20",
-  //     unreadCount: 0,
-  //     isFavorite: false,
-  //     isGroup: true,
-  //     profileImage: "https://randomuser.me/api/portraits/lego/2.jpg",
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "María Lucas",
-  //     lastMessage: "Gracias por la ayuda!",
-  //     timestamp: "10:15",
-  //     unreadCount: 5,
-  //     isFavorite: true,
-  //     isGroup: false,
-  //     profileImage: "https://randomuser.me/api/portraits/women/3.jpg",
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "Fernando León",
-  //     lastMessage: "¿Te llamo más tarde?",
-  //     timestamp: "08:50",
-  //     unreadCount: 0,
-  //     isFavorite: false,
-  //     isGroup: false,
-  //     profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-  //   },
-  // ];
-
-  // Filtrar las conversaciones según el filtro seleccionado
 
   const filteredConversations = conversations?.filter((conversation) => {
     switch (filter) {
@@ -93,21 +56,10 @@ export const ChatsPage = () => {
     )
   );
 
-  //! TODO: manejador de agregar contacto se debe enviar el email del usuario a agregar. esta peticion deberia actualizar la informacion de los contactos y renderizar el nuevo contacto
-  const handleAddContact = async ( ) => {
-    try {
-      let token = localStorage.getItem("token")
-      let email = "test@gmail.com"
-  
-      const res = await axios.post(`http://localhost:3001/api/contacts/`, { email }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
-    } catch (error) {
-      console.log({error: error.response.data.error})
-    }
-  };
+  //! TODO: boton que abre el modal pra mostrar y agregar contactos
+  const handleContactModal = () => {
+    setIsContactModalOpen(true);
+  }
 
   const handleOpenModal = (id) => {
     setOpenModalId(id);
@@ -129,7 +81,7 @@ export const ChatsPage = () => {
       </div>
 
       {/* //! TODO: Arreglar boton para agregar contactos deberia abrirse un modal que muestre los contactos y un boton de agregar nuevo, ahi colocariamos el mail del usuario a agregar y al confirmar deberia lanzarse handleAddContact*/}
-      <button className="bg-cyan-600" onClick={handleAddContact}>AGREGAR(+)</button>
+      <button className="bg-cyan-600" onClick={handleContactModal}>AGREGAR(+)</button>
 
       <ul className="bg-white text-gray-900 rounded-t-3xl p-4 mb-10">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
@@ -141,13 +93,13 @@ export const ChatsPage = () => {
               className="flex items-center p-3 bg-violet-100 rounded-xl shadow-md mb-3"
             >
               <img
-                src={conversation.profileImage}
-                alt={conversation.name}
+                src={conversation.Users[0].profileImage}
+                alt={conversation.Users[0].username}
                 className="w-14 h-15 rounded-xl"
               />
               <div className="flex-grow ml-4">
                 <Link
-                  to={`/chats/${conversation.name}`}
+                  to={`/chats/${conversation.Users[0].username}`}
                   className="flex justify-between text-violet-900"
                 >
                   <span className="font-semibold">{conversation.Users[0].username}</span>
@@ -197,6 +149,13 @@ export const ChatsPage = () => {
         onClose={handleCloseModal}
         onAction={handleAction}
         conversationId={openModalId}
+      />
+
+      {/* //! aqui se muestran los contactos y el input para agregar un contacto */}
+      <AddContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        contacts={contacts}
       />
 
       <Navbar />

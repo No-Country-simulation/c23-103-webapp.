@@ -37,7 +37,8 @@ const ContactController =  {
             attributes: ['id', 'username', 'email'] }],
             // through: { attributes: [] },
       });
-      res.status(200).json({ contacts });
+      const { Contacts } = contacts[0];
+      res.status(200).json({ Contacts });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
