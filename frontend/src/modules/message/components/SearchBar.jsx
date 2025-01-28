@@ -2,7 +2,7 @@ import React from "react";
 
 export const SearchBar = ({ searchQuery, setSearchQuery }) => {
   return (
-    <div className="mb-3">
+    <div className="mb-3 w-full pr-2">
       <input
         type="text"
         value={searchQuery}
