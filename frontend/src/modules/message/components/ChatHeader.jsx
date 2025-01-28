@@ -1,39 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { ChatModal } from "./ChatModal";
 
-export const ChatHeader = ({ title, profileImage }) => {
+export const ChatHeader = ({ name, profileImage }) => {
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+
+  const handleOpenChatModal = () => {
+    setIsChatModalOpen(true);
+  };
+
+  const handleCloseChatModal = () => {
+    setIsChatModalOpen(false);
+  };
+
+  const handleModalAction = (action, conversationId) => {
+    console.log(`Action: ${action}, Conversation ID: ${conversationId}`);
+    handleCloseChatModal();
+  };
+
   return (
-    <div className="flex items-center p-4 bg-blue-600 text-white shadow-md">
-      {/* Botón para volver a la lista de conversaciones */}
-      <Link
-        to="/chats"
-        className="inline-flex items-center space-x-2 hover:text-gray-200"
-      >
-        <svg
-          className="w-5 h-5"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
+    <div className="bg-violet-500 flex justify-between items-center p-4 text-white">
+      {/* Contenedor del lado izquierdo */}
+      <div className="flex items-center space-x-4">
+        {/* Botón para volver a la lista de conversaciones */}
+        <Link
+          to="/chats"
+          className="inline-flex items-center hover:text-gray-200"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </Link>
+          <svg
+            className="w-5 h-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </Link>
 
-      {/* Imagen de perfil */}
-      <img
-        src={profileImage}
-        alt={title}
-        className="w-10 h-10 rounded-full ml-4"
+        {/* Imagen de perfil */}
+        <img
+          src={profileImage}
+          alt={name}
+          className="w-10 h-10 rounded-2xl"
+        />
+
+        {/* Nombre de la persona/grupo */}
+        <h1 className="text-lg font-semibold">{name}</h1>
+      </div>
+
+      {/* Botón para abrir el modal */}
+      <button
+        className="bg-violet-500 rounded-xl w-10 h-10 flex items-center justify-center"
+        onClick={handleOpenChatModal}
+      >
+        <FontAwesomeIcon className="text-white" icon={faBars} />
+      </button>
+
+      {/* Modal de opciones */}
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={handleCloseChatModal}
+        onAction={handleModalAction}
+        conversationId={name} // Puedes ajustar esto según tu lógica
       />
-
-      {/* Nombre de la persona/grupo */}
-      <h1 className="text-lg font-semibold ml-4">{title}</h1>
     </div>
   );
 };

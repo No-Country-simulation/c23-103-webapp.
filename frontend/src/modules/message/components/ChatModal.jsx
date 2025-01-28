@@ -15,7 +15,7 @@ export const ChatModal = ({ isOpen, onClose, onAction, conversationId }) => {
           transition={{ duration: 0.1 }} // Duración de la animación
         >
           <motion.div
-            className="bg-violet-500 rounded-2xl p-30"
+            className="bg-violet-500 rounded-2xl pt-3"
             initial={{ scale: 0.8 }} // Comienza más pequeño
             animate={{ scale: 1 }}   // Escala a su tamaño normal
             exit={{ scale: 0.9 }}    // Se reduce al salir
