@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AddContactModal = ({ isOpen, onClose }) => {
   const [newContact, setNewContact] = useState("");
@@ -38,7 +39,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
   // Función para agregar un contacto
   const handleAddContact = async () => {
     if (!newContact.trim()) {
-      setError("Por favor ingresa un email válido.");
+      setError("Please input a valid email");
       return;
     }
 
@@ -69,78 +70,97 @@ const AddContactModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-      onClick={onClose}
-    >
-      {/* Modal Content */}
-      <div
-        className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg relative"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-center border-b pb-2 mb-4">
-          <h2 className="text-xl font-semibold">Agregar Contacto</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-800"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="bg-violet-500 rounded-2xl p-30"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            ✕
-          </button>
-        </div>
+            {/* Header */}
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded">
-            {error}
-          </div>
-        )}
+            <div className="flex bg-violet-500 rounded-2xl justify-between pt-3">
+              <h3 className="text-lg font-bold text-white m-5">
+                Add new contact
+              </h3>
+              <button
+                onClick={onClose}
+                className="text-white hover:text-gray-300 m-5"
+              >
+                ✕
+              </button>
+            </div>
 
-        {/* Input for New Contact */}
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Email del contacto"
-            value={newContact}
-            onChange={(e) => setNewContact(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            disabled={isLoading}
-          />
-        </div>
+            {/* Body */}
+            <div className="bg-white rounded-2xl shadow-lg p-4">
+              {/* Error Message */}
+              {error && (
+                <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded-lg">
+                  {error}
+                </div>
+              )}
 
-        {/* Add Contact Button */}
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={handleAddContact}
-            className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={isLoading}
-          >
-            {isLoading ? "Agregando..." : "Agregar"}
-          </button>
-        </div>
+              <div className="flex justify-between">
+              {/* Input */}
+              <div className="w-full pr-2">
+                <input
+                  type="text"
+                  placeholder="Add new email"
+                  value={newContact}
+                  onChange={(e) => setNewContact(e.target.value)}
+                  className="w-full p-2 border rounded-xl border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                  disabled={isLoading}
+                />
+              </div>
 
-        {/* Contact List */}
-        <div>
-          <h3 className="text-lg font-medium mb-2">Contactos:</h3>
-          {isLoading ? (
-            <p className="text-gray-500">Cargando contactos...</p>
-          ) : (
-            <ul className="space-y-2 max-h-48 overflow-y-auto">
-              {contacts.map((contact, index) => (
-                <li
-                  key={index}
-                  className="bg-gray-100 p-2 rounded flex items-center justify-between"
+              {/* Add Contact Button */}
+              <div className="">
+                <button
+                  onClick={handleAddContact}
+                  className={`bg-violet-500 text-white px-4 py-2 rounded-xl hover:bg-violet-900 ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={isLoading}
                 >
-                  <button>{contact.username}</button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
+                  {isLoading ? "Agregando..." : "Agregar"}
+                </button>
+              </div>
+              </div>
+
+              {/* Contact List */}
+              <div>
+                <h3 className="text-lg font-medium mt-5 mb-2 text-violet-500">Contactos:</h3>
+                {isLoading ? (
+                  <p className="text-gray-500">Cargando contactos...</p>
+                ) : (
+                  <ul className="space-y-2 max-h-48 overflow-y-auto">
+                    {contacts.map((contact, index) => (
+                      <li
+                        key={index}
+                        className="bg-violet-200 text-violet-900 p-2 rounded-lg flex items-center justify-between"
+                      >
+                        <button>{contact.username}</button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

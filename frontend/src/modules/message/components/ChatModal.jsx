@@ -12,18 +12,26 @@ export const ChatModal = ({ isOpen, onClose, onAction, conversationId }) => {
           initial={{ opacity: 0 }} // Comienza con opacidad 0
           animate={{ opacity: 1 }}  // Transición a opacidad 1
           exit={{ opacity: 0 }}     // Desaparece con opacidad 0
-          transition={{ duration: 0.3 }} // Duración de la animación
+          transition={{ duration: 0.1 }} // Duración de la animación
         >
           <motion.div
-            className="bg-violet-500 rounded-2xl pt-3"
+            className="bg-violet-500 rounded-2xl p-30"
             initial={{ scale: 0.8 }} // Comienza más pequeño
             animate={{ scale: 1 }}   // Escala a su tamaño normal
-            exit={{ scale: 0.8 }}    // Se reduce al salir
-            transition={{ duration: 0.3 }} // Duración de la animación
+            exit={{ scale: 0.9 }}    // Se reduce al salir
+            transition={{ duration: 0.1 }} // Duración de la animación
           >
-            <div className="bg-violet-500 rounded-2xl">
-              <div className="bg-violet-500 bg-white rounded-2xl w-72 shadow-lg">
+            <div className="flex bg-violet-500 rounded-2xl justify-between pt-3">
                 <h3 className="text-lg font-bold text-white m-5">Options</h3>
+                <button
+                onClick={onClose}
+                className="text-white hover:text-gray-300 m-5"
+              >
+                ✕
+              </button>
+              </div>
+
+              <div className="bg-violet-500 bg-white rounded-2xl w-72 shadow-lg">
                 <ul className="bg-white text-gray-900 rounded-2xl p-4 space-y-2">
                   <li>
                     <button
@@ -65,16 +73,8 @@ export const ChatModal = ({ isOpen, onClose, onAction, conversationId }) => {
                       Delete Chat
                     </button>
                   </li>
-                  <li>
-                    <button
-                      onClick={onClose}
-                      className="mt-4 text-sm text-gray-500 hover:text-gray-700"
-                    >
-                      Cancel
-                    </button>
-                  </li>
+                 
                 </ul>
-              </div>
             </div>
           </motion.div>
         </motion.div>
