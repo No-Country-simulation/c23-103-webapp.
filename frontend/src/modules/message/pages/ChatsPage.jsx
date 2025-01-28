@@ -17,7 +17,6 @@ export const ChatsPage = () => {
   
   //! TODO: este estado gestiona los contactos, podria ser un estado global
   const [conversations, setConversations] = useState([])
-  const [contacts, setContacts] = useState([])
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   //! TODO: llamamos a los contactos del usuario al cargar la página, (este useEffect es solo para que funcione por ahora, creo que seria mejor al iniciar sesion traer toda la informacion del usuario con sus contactos y conversaciones y traerlas del estado global)
   useEffect(() =>{
@@ -29,12 +28,6 @@ export const ChatsPage = () => {
         },
       })
       setConversations(res.data.conversations)
-      const contacts = await axios.get(`http://localhost:3001/api/contacts/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      setContacts(contacts.data.Contacts)
     };
     conversations()
   },[])
@@ -80,7 +73,7 @@ export const ChatsPage = () => {
         <h2 className="text-3xl text-white font-bold">Chats</h2>
       </div>
 
-      {/* //! TODO: Arreglar boton para agregar contactos deberia abrirse un modal que muestre los contactos y un boton de agregar nuevo, ahi colocariamos el mail del usuario a agregar y al confirmar deberia lanzarse handleAddContact*/}
+      {/* //! TODO: Arreglar boton para agregar contactost*/}
       <button className="bg-cyan-600" onClick={handleContactModal}>AGREGAR(+)</button>
 
       <ul className="bg-white text-gray-900 rounded-t-3xl p-4 mb-10">
@@ -155,7 +148,6 @@ export const ChatsPage = () => {
       <AddContactModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
-        contacts={contacts}
       />
 
       <Navbar />

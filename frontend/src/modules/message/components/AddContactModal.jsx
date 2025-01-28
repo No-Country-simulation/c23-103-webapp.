@@ -1,22 +1,68 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
-const AddContactModal = ({ isOpen, onClose, contacts }) => {
+const AddContactModal = ({ isOpen, onClose }) => {
   const [newContact, setNewContact] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  //! TODO: manejador de agregar contacto se debe enviar el email del usuario a agregar. esta peticion deberia actualizar la informacion de los contactos y renderizar el nuevo contacto (esta hardcodeado, falta la funcion para capturar la info del input y enviarla)
-  const handleAddContact = async ( ) => {
+  // Función para obtener contactos
+  const fetchContacts = useCallback(async () => {
+    setIsLoading(true);
+    setError("");
+
     try {
-      let token = localStorage.getItem("token")
-      let email = "carlos@gmail.com"
-  
-      await axios.post(`http://localhost:3001/api/contacts/`, { email }, {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:3001/api/contacts/", {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setContacts(response.data.Contacts || []);
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al obtener los contactos");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Obtener contactos al abrir el modal
+  useEffect(() => {
+    if (isOpen) {
+      fetchContacts();
+    }
+  }, [isOpen, fetchContacts]);
+
+  // Función para agregar un contacto
+  const handleAddContact = async () => {
+    if (!newContact.trim()) {
+      setError("Por favor ingresa un email válido.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "http://localhost:3001/api/contacts/",
+        { email: newContact },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
-    } catch (error) {
-      console.log({error: error.response.data.error})
+      );
+
+      setNewContact(""); // Limpiar input
+      fetchContacts(); // Actualizar la lista de contactos
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al agregar el contacto");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -43,14 +89,22 @@ const AddContactModal = ({ isOpen, onClose, contacts }) => {
           </button>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded">
+            {error}
+          </div>
+        )}
+
         {/* Input for New Contact */}
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Nombre del contacto"
+            placeholder="Email del contacto"
             value={newContact}
             onChange={(e) => setNewContact(e.target.value)}
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={isLoading}
           />
         </div>
 
@@ -58,26 +112,32 @@ const AddContactModal = ({ isOpen, onClose, contacts }) => {
         <div className="flex justify-end mb-4">
           <button
             onClick={handleAddContact}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
           >
-            Agregar
+            {isLoading ? "Agregando..." : "Agregar"}
           </button>
         </div>
 
         {/* Contact List */}
         <div>
           <h3 className="text-lg font-medium mb-2">Contactos:</h3>
-          <ul className="space-y-2 max-h-48 overflow-y-auto">
-            {contacts.map((contact, index) => (
-              <li
-                key={index}
-                className="bg-gray-100 p-2 rounded flex items-center justify-between"
-              >
-                {/* TODO este boton debería abrir la pantalla de conversacion */}
-                <button>{contact.username}</button>
-              </li>
-            ))}
-          </ul>
+          {isLoading ? (
+            <p className="text-gray-500">Cargando contactos...</p>
+          ) : (
+            <ul className="space-y-2 max-h-48 overflow-y-auto">
+              {contacts.map((contact, index) => (
+                <li
+                  key={index}
+                  className="bg-gray-100 p-2 rounded flex items-center justify-between"
+                >
+                  <button>{contact.username}</button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
