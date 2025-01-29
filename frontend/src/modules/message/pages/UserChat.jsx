@@ -61,7 +61,7 @@ export const UserChat = () => {
       {/* Contenedor del chat */}
       <div className="flex-1 flex flex-col bg-white rounded-t-3xl">
         {/* Área de mensajes con scrollbar */}
-        <div className="flex-1 overflow-y-auto px-2 pt-5" style={{ maxHeight: "calc(100vh - 150px)" }}>
+        <div className="flex-1 overflow-y-auto px-2 pt-5" style={{ maxHeight: "calc(100vh - 120px)" }}>
           <MessageList messages={messages} />
         </div>
 
