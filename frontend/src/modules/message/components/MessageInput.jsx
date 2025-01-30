@@ -50,7 +50,7 @@ export const MessageInput = () => {
   };
 
   return (
-    <div className="p-4 bg-violet-500 flex items-center space-x-2 relative">
+    <div className="p-2 bg-violet-500 flex items-center space-x-2 relative">
       {/* Botón para adjuntar archivos multimedia */}
       <label
         className="text-white hover:text-violet-900 cursor-pointer"
