@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { GroupBar } from "../components/GroupBar";
@@ -9,31 +9,58 @@ import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import AddContactModal from "../components/AddContactModal";
+import { AppContext } from "../../../context/context";
+import socket from "../../../core/utils/socket";
 
 export const ChatsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [openModalId, setOpenModalId] = useState(null);
+  const { addUserInfo, userConversations, addUserConversations, addCurrentConversation } = useContext(AppContext)
 
   //! TODO: este estado gestiona los contactos, podria ser un estado global
-  const [conversations, setConversations] = useState([]);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   //! TODO: llamamos a los contactos del usuario al cargar la página, (este useEffect es solo para que funcione por ahora, creo que seria mejor al iniciar sesion traer toda la informacion del usuario con sus contactos y conversaciones y traerlas del estado global)
   useEffect(() => {
-    const conversations = async () => {
+    const userInformation = async() => {
       let token = localStorage.getItem("token");
-      const res = await axios.get(`http://localhost:3001/api/conversations/`, {
+      let userId = localStorage.getItem("userId");
+      const response = await axios.get(`http://localhost:3001/api/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setConversations(res.data.conversations);
-    };
-    conversations();
+      addUserInfo(response.data);
+    }
+    userInformation();
   }, []);
+  
+  const fetchConversations = useCallback(async () => {
+    
+    try {
+      if(!userConversations.length) {
+        let token = localStorage.getItem("token");
+        const res = await axios.get(`http://localhost:3001/api/conversations/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        addUserConversations(res.data.conversations);
+      }
+    } catch (err) {
+      console.log("Error al obtener los contactos", err);
+    }
+  }, [userConversations, addUserConversations]);
+  
+  //! TODO: verificar la conexion del socket
+  useEffect(() => {
+    fetchConversations();
+    socket.on("newMesage", () => {
+      console.log("se ha recibido un nuevo mensaje")
+    })
+  }, [fetchConversations]);
 
-  const filteredConversations = conversations
-    ?.filter((conversation) => {
+  const filteredConversations = userConversations.filter((conversation) => {
       switch (filter) {
         case "noLeidos":
           return conversation.unreadCount > 0;
@@ -55,6 +82,17 @@ export const ChatsPage = () => {
   const handleContactModal = () => {
     setIsContactModalOpen(true);
   };
+
+  //! TODO: envia informacion a un estado
+  const handleConversationClick = (conversation) => {
+    const contactInformacionChat = {
+      conversationId: conversation.id,
+      contactId: conversation.Users[0].id,
+      username: conversation.Users[0].username,
+      profileImage: conversation.Users[0].profileImage,
+    }
+    addCurrentConversation(contactInformacionChat);
+  }
 
   const handleOpenModal = (id) => {
     setOpenModalId(id);
@@ -105,8 +143,9 @@ export const ChatsPage = () => {
               />
               <div className="flex-grow ml-4">
                 <Link
-                  to={`/chats/${conversation.Users[0].username}`}
+                  to={`/chats/${conversation.Users[0].id}`}
                   className="flex justify-between text-violet-900"
+                  onClick={() => handleConversationClick(conversation)}
                 >
                   <span className="font-semibold">
                     {conversation.Users[0].username}

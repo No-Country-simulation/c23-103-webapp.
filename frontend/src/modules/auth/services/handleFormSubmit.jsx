@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const handleFormSubmit = async (values, formType) => {
   try {
-    let userId = 0;
+    let userInfo = {};
     if (formType === "register") {
       try {
         const { data }  = await axios.post(
@@ -18,14 +18,12 @@ export const handleFormSubmit = async (values, formType) => {
             },
           }
         );
-        userId = data.user.id;
-        localStorage.setItem("userId", userId);
-        localStorage.setItem("userName", data.user.username);
+        userInfo = data.user
         localStorage.setItem("token", data.token);
       } catch (error) {
         return { success: false, message: error.response.data.error };
       }
-      return { success: true, userId };
+      return { success: true, userInfo };
     } else if (formType === "login") {
       try {
         const { data } = await axios.post(
@@ -41,14 +39,12 @@ export const handleFormSubmit = async (values, formType) => {
           }
         );
         //! TODO: se debe guardar el token para mantener la sesion activa res.data.token
-        userId = data.user.id;
-        localStorage.setItem("userId", userId);
-        localStorage.setItem("userName", data.user.username);
         localStorage.setItem("token", data.token);
+        userInfo = data.user
       } catch (error) {
         return { success: false, message: error };
       }
-      return { success: true, userId };
+      return { success: true, userInfo };
     } else {
       return { success: false };
     }

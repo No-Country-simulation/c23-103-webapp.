@@ -1,14 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import { AppContext } from "../../../context/context";
 
 const AddContactModal = ({ isOpen, onClose }) => {
   const [newContact, setNewContact] = useState("");
-  const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { userContacts, addUserContacts, addCurrentConversation } = useContext(AppContext)
 
-  // Función para obtener contactos
+  //! TODO: Función para obtener contactos
   const fetchContacts = useCallback(async () => {
     setIsLoading(true);
     setError("");
@@ -20,8 +22,8 @@ const AddContactModal = ({ isOpen, onClose }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setContacts(response.data.Contacts || []);
+      // setContacts(response.data.Contacts || []);
+      addUserContacts(response.data.Contacts || []);
     } catch (err) {
       setError(err.response?.data?.error || "Error al obtener los contactos");
     } finally {
@@ -29,14 +31,14 @@ const AddContactModal = ({ isOpen, onClose }) => {
     }
   }, []);
 
-  // Obtener contactos al abrir el modal
+  //! Obtener contactos al abrir el modal
   useEffect(() => {
     if (isOpen) {
       fetchContacts();
     }
   }, [isOpen, fetchContacts]);
 
-  // Función para agregar un contacto
+  //! Función para agregar un contacto
   const handleAddContact = async () => {
     if (!newContact.trim()) {
       setError("Please input a valid email");
@@ -65,6 +67,17 @@ const AddContactModal = ({ isOpen, onClose }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  //! TODO: funcion para abrir una nueva ventana de chat
+  const handleContactClick = (contact) => {
+    const contactInformacionChat = {
+      conversationId: null,
+      contactId: contact.id,
+      username: contact.username,
+      profileImage: "https://cdn-icons-png.flaticon.com/512/7276/7276847.png",
+    }
+    addCurrentConversation(contactInformacionChat); // Al hacer clic, almacenamos el contacto seleccionado
   };
 
   if (!isOpen) return null;
@@ -145,12 +158,20 @@ const AddContactModal = ({ isOpen, onClose }) => {
                   <p className="text-gray-500">Cargando contactos...</p>
                 ) : (
                   <ul className="space-y-2 max-h-48 overflow-y-auto">
-                    {contacts.map((contact, index) => (
+                    {userContacts.map((contact, index) => (
                       <li
                         key={index}
                         className="bg-violet-200 text-violet-900 p-2 rounded-lg flex items-center justify-between"
                       >
-                        <button>{contact.username}</button>
+                          <Link
+                            to={{
+                              pathname: `/chats/temp-${contact.id}`,
+                            }}
+                            onClick={() => handleContactClick(contact)}
+                            className="flex justify-between text-violet-900"
+                          >
+                            {contact.username}
+                          </Link>
                       </li>
                     ))}
                   </ul>

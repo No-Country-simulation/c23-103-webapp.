@@ -18,16 +18,6 @@ import socket from "./core/utils/socket";
 import { useEffect } from "react";
 
 function App() {
-  // useEffect(() => {
-  //   socket.on('message', (data) => {
-  //     console.log('Mensaje recibido:', data);
-  //   });
-
-  //   // Limpiar la conexión cuando el componente se desmonte
-  //   return () => {
-  //     socket.off('message'); // Deja de escuchar el evento cuando ya no lo necesites
-  //   };
-  // }, []);
   // Configuración de rutas
   const routes = [
     {

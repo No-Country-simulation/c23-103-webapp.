@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { ChatModal } from "./ChatModal";
+import { AppContext } from "../../../context/context";
 
 export const ChatHeader = ({ name, profileImage }) => {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const { addCurrentConversation } = useContext(AppContext)
 
   const handleOpenChatModal = () => {
     setIsChatModalOpen(true);
@@ -28,6 +30,7 @@ export const ChatHeader = ({ name, profileImage }) => {
         <Link
           to="/chats"
           className="inline-flex items-center hover:text-gray-200"
+          onClick={() => addCurrentConversation({})}
         >
           <svg
             className="w-5 h-5"

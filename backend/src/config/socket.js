@@ -21,6 +21,11 @@ const setupSocket = (server) => {
       io.to(data.roomId).emit('receive_message', data);
     });
 
+    socket.on("sendMessage", (data) => {
+      console.log("mensaje recibido", data)
+      io.emit("newMessage", data)
+    })
+
     socket.on('disconnect', () => {
       console.log('Usuario desconectado:', socket.id);
     });

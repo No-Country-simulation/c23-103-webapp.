@@ -1,8 +1,9 @@
 const { Message, Conversation, User } = require('../models');
 const MessageController = {
+
   async sendMessage (req, res) {
     try {
-      const { conversationId, content, receiverId } = req.body;
+      const { conversationId, content, receiverId, senderId } = req.body;
       // Verificar que la conversación exista
       const conversation = await Conversation.findByPk(conversationId);
       if (!conversation) {
@@ -26,32 +27,38 @@ const MessageController = {
   async getMessages (req, res) {
     try {
       const { conversationId } = req.params;
-  
-      // Verificar que la conversación exista
-      const conversation = await Conversation.findByPk(conversationId);
-      if (!conversation) {
-        return res.status(404).json({ error: 'Conversación no encontrada.' });
+      
+      if (conversationId  === "null") {
+        res.status(200).json({ res: "Nueva conversacion" });
+      } else {
+          // Verificar que la conversación exista
+        const conversation = await Conversation.findByPk(conversationId);
+        if (!conversation) {
+          return res.status(404).json({ error: 'Conversación no encontrada.' });
+        }
+    
+        // Obtener los mensajes de la conversación
+        const messages = await Message.findAll({
+          where: { conversationId },
+          include: [
+            {
+              model: User,
+              as: 'sender',
+              attributes: ['id', 'username'], // Información básica del remitente
+            },
+            {
+              model: User,
+              as: 'receiver',
+              attributes: ['id', 'username'], // Información básica del receptor
+            },
+          ],
+          order: [['createdAt', 'ASC']], // Ordenar por fecha de creación
+        });
+    
+        res.status(200).json({ messages });
       }
   
-      // Obtener los mensajes de la conversación
-      const messages = await Message.findAll({
-        where: { conversationId },
-        include: [
-          {
-            model: User,
-            as: 'sender',
-            attributes: ['id', 'username'], // Información básica del remitente
-          },
-          {
-            model: User,
-            as: 'receiver',
-            attributes: ['id', 'username'], // Información básica del receptor
-          },
-        ],
-        order: [['createdAt', 'ASC']], // Ordenar por fecha de creación
-      });
-  
-      res.status(200).json({ messages });
+      
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

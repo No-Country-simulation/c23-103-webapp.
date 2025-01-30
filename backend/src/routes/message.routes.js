@@ -5,6 +5,6 @@ const authMiddleware = require('../middlewares/auth');
 const router = express.Router();
 
 router.post('/', authMiddleware, MessageController.sendMessage);
-router.get('/:userId', authMiddleware, MessageController.getMessages);
+router.get('/:conversationId', authMiddleware, MessageController.getMessages);
 
 module.exports = router;

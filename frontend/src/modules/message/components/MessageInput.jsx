@@ -7,7 +7,7 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 
-export const MessageInput = () => {
+export const MessageInput = ({ sendMessage }) => {
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [file, setFile] = useState(null); // Estado para el archivo adjunto
   const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Mostrar/ocultar picker de emojis
@@ -29,6 +29,7 @@ export const MessageInput = () => {
     if (message.trim()) {
       console.log("Mensaje enviado:", message);
       setMessage(""); // Limpiar el mensaje
+      sendMessage(message);
     }
     if (file) {
       console.log("Archivo enviado:", file.name);

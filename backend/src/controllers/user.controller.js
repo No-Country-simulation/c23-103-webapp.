@@ -30,9 +30,14 @@ const UserController = {
         { expiresIn: '24h' }
       );
       
-      const { password: _, ...userWithoutPassword } = user.toJSON();
+      const formatedUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+      }
       res.status(201).json({
-        user: userWithoutPassword,
+        user: formatedUser,
         token
       });
     } catch (error) {
@@ -61,10 +66,14 @@ const UserController = {
         process.env.JWT_SECRET,
         { expiresIn: '24h' }
       );
-      
-      const { password: _, ...userWithoutPassword } = user.toJSON();
+      const formatedUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+      }
       res.json({
-        user: userWithoutPassword,
+        user: formatedUser,
         token
       });
     } catch (error) {
