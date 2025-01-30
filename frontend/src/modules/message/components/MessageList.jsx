@@ -36,7 +36,7 @@ export const MessageList = ({ messages, senderImage, receiverImage }) => {
             }`}
           >
             <p className="text-sm">{message.content}</p>
-            <span className="text-xs text-gray-500 mt-1 block">
+            <span className="text-xs text-gray-400 mt-1 block">
               {message.updatedAt}
             </span>
           </div>

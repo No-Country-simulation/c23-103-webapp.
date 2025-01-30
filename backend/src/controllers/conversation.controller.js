@@ -3,9 +3,9 @@ const { Op, Sequelize } = require('sequelize');
 const { Conversation, User } = require('../models');
 
 const ConversationController = {
-    async createConversation (req, res) {
+    async createConversation ( {conversationName, userIds}) {
+      console.log("name", conversationName, "userids", userIds) 
         try {
-            const { name, isGroup, userIds } = req.body;
             // Verificar que los usuarios existan
             const users = await User.findAll({ where: { id: userIds } });
             if (users.length !== userIds.length) {
@@ -13,13 +13,14 @@ const ConversationController = {
             }
         
             // Crear la conversación
-            const conversation = await Conversation.create({ name, isGroup });
+            const conversation = await Conversation.create({ conversationName });
         
             // Asociar usuarios a la conversación
             await conversation.addUsers(userIds);
-        
+            console.log("se creo", conversation)
             res.status(201).json({ message: 'Conversación creada con éxito.', conversation });
           } catch (error) {
+            console.log(error.message)
             res.status(500).json({ error: error.message });
           }
     },

@@ -50,7 +50,7 @@ export const ChatsPage = () => {
     } catch (err) {
       console.log("Error al obtener los contactos", err);
     }
-  }, [userConversations, addUserConversations]);
+  }, []);
   
   //! TODO: verificar la conexion del socket
   useEffect(() => {

@@ -85,15 +85,15 @@ export const UserChat = () => {
       />
 
       {/* Contenido del chat */}
-      <div className="flex-1 pt-5 px-2 bg-white rounded-t-3xl">
-        
-        <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col bg-white rounded-t-3xl">
+        {/* Área de mensajes con scrollbar */}
+        <div className="flex-1 overflow-y-auto px-2 pt-5" style={{ maxHeight: "calc(100vh - 120px)" }}>
         <MessageList messages={messages} senderImage={userInfo.profileImage} receiverImage={currentConversation.profileImage}/>
         </div>
-      </div>
 
-      {/* Input */}
-      <MessageInput sendMessage={sendMessage} />
+        {/* Input */}
+        <MessageInput sendMessage={sendMessage} />
+      </div>
     </div>
   );
 };

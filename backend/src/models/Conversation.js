@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
-      name: {
+      conversationName: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false

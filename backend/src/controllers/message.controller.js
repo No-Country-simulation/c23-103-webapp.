@@ -1,9 +1,18 @@
 const { Message, Conversation, User } = require('../models');
+const ConversationController = require('./conversation.controller');
 const MessageController = {
 
   async sendMessage (req, res) {
     try {
       const { conversationId, content, receiverId, senderId } = req.body;
+      console.log(req.body);
+
+      if (conversationId === null) {
+        console.log("soy nuevo")
+        const userIds = [senderId, receiverId].sort();
+        const conversationName = userIds.join("_")
+        await ConversationController.createConversation({conversationName, userIds})
+      }
       // Verificar que la conversación exista
       const conversation = await Conversation.findByPk(conversationId);
       if (!conversation) {
