@@ -50,14 +50,20 @@ export const ChatsPage = () => {
     } catch (err) {
       console.log("Error al obtener los contactos", err);
     }
-  }, []);
+  }, [userConversations, addUserConversations]);
   
   //! TODO: verificar la conexion del socket
   useEffect(() => {
     fetchConversations();
-    socket.on("newMesage", () => {
-      console.log("se ha recibido un nuevo mensaje")
-    })
+    const handleUpdateConversation = () => {
+      fetchConversations();
+    };
+    socket.on("updateConversation", fetchConversations)
+    socket.on("updateConversation", handleUpdateConversation);
+
+    return () => {
+      socket.off("updateConversation", handleUpdateConversation);
+    };
   }, [fetchConversations]);
 
   const filteredConversations = userConversations.filter((conversation) => {

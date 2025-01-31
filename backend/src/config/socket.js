@@ -26,6 +26,10 @@ const setupSocket = (server) => {
       io.emit("newMessage", data)
     })
 
+    socket.on("newConversation", () => {
+      io.emit("updateConversation")
+    })
+
     socket.on('disconnect', () => {
       console.log('Usuario desconectado:', socket.id);
     });

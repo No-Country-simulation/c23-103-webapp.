@@ -9,7 +9,7 @@ const ConversationController = {
             // Verificar que los usuarios existan
             const users = await User.findAll({ where: { id: userIds } });
             if (users.length !== userIds.length) {
-              return res.status(400).json({ error: 'Uno o más usuarios no existen.' });
+              throw Error ({ error: 'Uno o más usuarios no existen.' });
             }
         
             // Crear la conversación
@@ -18,10 +18,10 @@ const ConversationController = {
             // Asociar usuarios a la conversación
             await conversation.addUsers(userIds);
             console.log("se creo", conversation)
-            res.status(201).json({ message: 'Conversación creada con éxito.', conversation });
+            return conversation ;
           } catch (error) {
             console.log(error.message)
-            res.status(500).json({ error: error.message });
+            throw Error ({ error: error.message });
           }
     },
     async getUserConversations (req, res) {

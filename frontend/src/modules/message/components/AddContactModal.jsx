@@ -1,14 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/context";
 
 const AddContactModal = ({ isOpen, onClose }) => {
   const [newContact, setNewContact] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const { userContacts, addUserContacts, addCurrentConversation } = useContext(AppContext)
+  const { userInfo, userContacts, userConversations, addUserContacts, addCurrentConversation } = useContext(AppContext)
+
+  const navigate = useNavigate()
 
   //! TODO: Función para obtener contactos
   const fetchContacts = useCallback(async () => {
@@ -71,13 +73,16 @@ const AddContactModal = ({ isOpen, onClose }) => {
 
   //! TODO: funcion para abrir una nueva ventana de chat
   const handleContactClick = (contact) => {
+    const conversationName = [contact.id, userInfo.id].sort().join('_');
+    const searchConversation = userConversations?.find(conversation => conversation.conversationName === conversationName);
     const contactInformacionChat = {
-      conversationId: null,
+      conversationId: searchConversation ? searchConversation.id : null,
       contactId: contact.id,
       username: contact.username,
       profileImage: "https://cdn-icons-png.flaticon.com/512/7276/7276847.png",
     }
     addCurrentConversation(contactInformacionChat); // Al hacer clic, almacenamos el contacto seleccionado
+    searchConversation ? navigate(`/chats/${searchConversation.id}`) : navigate(`/chats/temp-${contact.id}`)
   };
 
   if (!isOpen) return null;
@@ -163,15 +168,12 @@ const AddContactModal = ({ isOpen, onClose }) => {
                         key={index}
                         className="bg-violet-200 text-violet-900 p-2 rounded-lg flex items-center justify-between"
                       >
-                          <Link
-                            to={{
-                              pathname: `/chats/temp-${contact.id}`,
-                            }}
+                          <button
                             onClick={() => handleContactClick(contact)}
                             className="flex justify-between text-violet-900"
                           >
                             {contact.username}
-                          </Link>
+                          </button>
                       </li>
                     ))}
                   </ul>

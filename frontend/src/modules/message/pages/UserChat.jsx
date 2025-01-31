@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChatHeader } from "../components/ChatHeader";
 import { MessageInput } from "../components/MessageInput";
 import { MessageList } from "../components/MessageList";
@@ -8,8 +8,8 @@ import { AppContext } from "../../../context/context";
 import socket from "../../../core/utils/socket";
 
 export const UserChat = () => {
-  const { conversationId } = useParams();
-  const { userInfo, currentConversation} = useContext(AppContext);
+  const navigate = useNavigate()
+  const { userInfo, currentConversation, addCurrentConversation} = useContext(AppContext);
 
   useEffect(() => {
       socket.on('newMessage', (data) => {
@@ -19,8 +19,7 @@ export const UserChat = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-        });
-        
+          });
         setMessages(response.data.messages);
       }
       response()
@@ -29,7 +28,7 @@ export const UserChat = () => {
       return () => {
         socket.off('newMessage'); 
       };
-    }, []);
+    }, [currentConversation]);
   
   //! TODO: llamar a la api para traer los mensajes de la base de datos
   const [ messages, setMessages] = useState([])
@@ -58,7 +57,7 @@ export const UserChat = () => {
   const sendMessage = useCallback(async (content) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:3001/api/messages", {
+      const conversation = await axios.post("http://localhost:3001/api/messages", {
         content,
         conversationId: currentConversation.conversationId,
         receiverId : currentConversation.contactId,
@@ -68,12 +67,21 @@ export const UserChat = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      if ( !currentConversation.conversationId) {
+        socket.emit('newConversation')
+        const contactInformacionChat = {
+          ...currentConversation,
+          conversationId: conversation.data?.conversationId
+        }
+        addCurrentConversation(contactInformacionChat);
+        navigate(`/chats/${conversation.data?.conversationId}`);
+      }
 
       socket.emit("sendMessage", content)
     } catch (err) {
       console.log("Error al enviar el mensaje", err);
     }
-  }, []);
+  }, [currentConversation]);
 
   return (
     <div className="w-full mx-auto h-screen flex flex-col bg-violet-500">
