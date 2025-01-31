@@ -11,27 +11,37 @@ export const UserChat = () => {
   const navigate = useNavigate()
   const { userInfo, currentConversation, addCurrentConversation} = useContext(AppContext);
 
+  const [ messages, setMessages] = useState([])
+
   useEffect(() => {
-      socket.on('newMessage', (data) => {
-        const response = async () => {
+    const handleNewMessage = async (data) => {
+      try {
+        if (currentConversation?.conversationId) {
           const token = localStorage.getItem("token");
-          const response = await axios.get(`http://localhost:3001/api/messages/${currentConversation.conversationId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-        setMessages(response.data.messages);
+          const response = await axios.get(
+            `http://localhost:3001/api/messages/${currentConversation.conversationId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setMessages(response.data.messages);
+        }
+      } catch (err) {
+        console.error("Error al obtener los mensajes:", err);
       }
-      response()
-      });
-  
-      return () => {
-        socket.off('newMessage'); 
-      };
+    };
+    
+    socket.on('newMessage', handleNewMessage);
+
+    return () => {
+      socket.off('newMessage'); 
+    };
     }, [currentConversation]);
   
   //! TODO: llamar a la api para traer los mensajes de la base de datos
-  const [ messages, setMessages] = useState([])
+
   // Función para obtener mensajes
   const fetchMessages = useCallback(async () => {
     // setIsLoading(true);
@@ -67,8 +77,7 @@ export const UserChat = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if ( !currentConversation.conversationId) {
-        socket.emit('newConversation')
+      if ( !currentConversation.conversationId) { 
         const contactInformacionChat = {
           ...currentConversation,
           conversationId: conversation.data?.conversationId
@@ -76,8 +85,8 @@ export const UserChat = () => {
         addCurrentConversation(contactInformacionChat);
         navigate(`/chats/${conversation.data?.conversationId}`);
       }
-
       socket.emit("sendMessage", content)
+      socket.emit('newConversation')
     } catch (err) {
       console.log("Error al enviar el mensaje", err);
     }

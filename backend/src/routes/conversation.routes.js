@@ -8,5 +8,6 @@ router.post('/', ConversationController.createConversation); // Crear conversaci
 router.get('/', authMiddleware, ConversationController.getUserConversations); // Obtener conversaciones del usuario
 router.get('/:id', ConversationController.getConversationById); // Obtener conversación por ID
 router.delete('/:id', ConversationController.deleteConversation); // Eliminar conversación
+router.put('/:conversationId', ConversationController.updateConversation);
 
 module.exports = router;

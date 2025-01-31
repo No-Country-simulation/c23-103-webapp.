@@ -22,7 +22,6 @@ const setupSocket = (server) => {
     });
 
     socket.on("sendMessage", (data) => {
-      console.log("mensaje recibido", data)
       io.emit("newMessage", data)
     })
 

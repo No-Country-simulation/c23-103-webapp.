@@ -36,7 +36,6 @@ export const ChatsPage = () => {
   }, []);
   
   const fetchConversations = useCallback(async () => {
-    
     try {
       if(!userConversations.length) {
         let token = localStorage.getItem("token");
@@ -58,13 +57,12 @@ export const ChatsPage = () => {
     const handleUpdateConversation = () => {
       fetchConversations();
     };
-    socket.on("updateConversation", fetchConversations)
     socket.on("updateConversation", handleUpdateConversation);
 
     return () => {
       socket.off("updateConversation", handleUpdateConversation);
     };
-  }, [fetchConversations]);
+  }, []);
 
   const filteredConversations = userConversations.filter((conversation) => {
       switch (filter) {

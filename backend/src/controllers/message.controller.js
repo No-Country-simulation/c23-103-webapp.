@@ -23,6 +23,7 @@ const MessageController = {
       }
       // Crear el mensaje
       const message = await Message.create({ content, conversationId, senderId, receiverId });
+      const updateConversation = await ConversationController.updateConversation({ lastMessage: content, conversationId })
       res.status(201).json({ message, conversationId });
     } catch (error) {
       res.status(500).json({ error: error.message });

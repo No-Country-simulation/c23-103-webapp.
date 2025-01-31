@@ -4,7 +4,6 @@ const { Conversation, User } = require('../models');
 
 const ConversationController = {
     async createConversation ( {conversationName, userIds}) {
-      console.log("name", conversationName, "userids", userIds) 
         try {
             // Verificar que los usuarios existan
             const users = await User.findAll({ where: { id: userIds } });
@@ -17,7 +16,6 @@ const ConversationController = {
         
             // Asociar usuarios a la conversación
             await conversation.addUsers(userIds);
-            console.log("se creo", conversation)
             return conversation ;
           } catch (error) {
             console.log(error.message)
@@ -81,6 +79,29 @@ const ConversationController = {
           } catch (error) {
             res.status(500).json({ error: error.message });
           }
+    },
+
+    async updateConversation ({ isFavorite, lastMessage, conversationId }) {
+      try {
+          const conversation = await Conversation.findOne({
+              where: { id: conversationId }
+          });
+  
+          if (!conversation) {
+              return res.status(404).json({ message: 'Conversation not found' });
+          }
+  
+          // Actualizamos solo los campos proporcionados
+          const updatedConversation = await conversation.update({
+            unreadCount: conversation.unreadCount +1,
+            isFavorite: isFavorite !== undefined ? isFavorite : conversation.isFavorite,
+            lastMessage: lastMessage !== undefined ? lastMessage : conversation.lastMessage,
+          });
+          return(updatedConversation);
+      } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Internal server error' });
+      }
     },
 
     async deleteConversation (req, res) {
