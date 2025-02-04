@@ -4,10 +4,30 @@ import axios from "axios";
 
 const API_BASE = process.env.REACT_APP_API_BASE;
 
-export const fetchMessages = (conversationId) => {
-  return axios.get(`${API_BASE}/messages/${conversationId}`);
+const token = localStorage.getItem("token");
+export const fetchMessages = async (conversationId) => {
+  try {
+    const response = await axios.get(`${API_BASE}/messages/${conversationId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data?.messages;
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
-export const sendMessage = (conversationId, message) => {
-  return axios.post(`${API_BASE}/messages/${conversationId}`, { message });
+export const sendMessage = async ( message) => {
+  try {
+    const response = await axios.post(`${API_BASE}/messages`,  message , {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("mensajes", response.data)
+    return response.data
+  } catch (error) {
+    console.log("error")
+  }
 };

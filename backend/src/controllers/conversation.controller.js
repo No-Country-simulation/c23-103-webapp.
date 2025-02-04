@@ -81,26 +81,28 @@ const ConversationController = {
           }
     },
 
-    async updateConversation ({ isFavorite, lastMessage, conversationId }) {
+    async updateConversation ({ unreadCount, isFavorite, lastMessage, conversationId }) {
+      console.log("llego al back", unreadCount, `hola${conversationId}`);
       try {
           const conversation = await Conversation.findOne({
               where: { id: conversationId }
           });
-  
+          console.log("encontrado", conversation)
           if (!conversation) {
-              return res.status(404).json({ message: 'Conversation not found' });
+              return ({ message: 'Conversation not found' });
           }
   
           // Actualizamos solo los campos proporcionados
           const updatedConversation = await conversation.update({
-            unreadCount: conversation.unreadCount +1,
+            unreadCount: unreadCount === "reset" ? 0 : conversation.unreadCount +1,
             isFavorite: isFavorite !== undefined ? isFavorite : conversation.isFavorite,
             lastMessage: lastMessage !== undefined ? lastMessage : conversation.lastMessage,
           });
-          return(updatedConversation);
+          console.log(updatedConversation)
+          return updatedConversation;
       } catch (error) {
           console.error(error);
-          res.status(500).json({ message: 'Internal server error' });
+          return({ message: 'Internal server error' });
       }
     },
 
