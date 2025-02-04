@@ -2,16 +2,12 @@ import socket from "./socket";
 
 export const setupSocketListeners = (setConversations) => {
     const updateLastMessage = (message) => {
-        console.log("mensaje info", message);
-
         setConversations((prev) =>{
-            console.log("la previa", prev);
             const nuevitas =prev.map((conv) =>
                 conv.id === message.conversationId
                     ? { ...conv, lastMessage: message.content, unreadCount :  conv.unreadCount + 1}
                     : conv
             )
-            console.log("nuevas", nuevitas)
         return nuevitas}
         );
     };

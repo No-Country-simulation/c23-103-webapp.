@@ -25,7 +25,6 @@ export const sendMessage = async ( message) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("mensajes", response.data)
     return response.data
   } catch (error) {
     console.log("error")

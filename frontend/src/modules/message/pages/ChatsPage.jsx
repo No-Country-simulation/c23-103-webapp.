@@ -16,11 +16,9 @@ export const ChatsPage = () => {
   const [filter, setFilter] = useState("all");
   const [openModalId, setOpenModalId] = useState(null);
   const { addUserInfo, userConversations, addCurrentConversation, currentConversation } = useContext(AppContext)
-  console.log("ChatPage", currentConversation)
 
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   useEffect(() => {
-    console.log("user informa")
     const userInformation = async() => {
       let token = localStorage.getItem("token");
       let userId = localStorage.getItem("userId");

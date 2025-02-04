@@ -44,7 +44,6 @@ export const UserChat = () => {
         receiverId : currentConversation.contactId,
         senderId: userInfo.id
       })
-      console.log("hola", conversation)
       if ( !currentConversation.conversationId) { 
         const contactInformacionChat = {
           ...currentConversation,

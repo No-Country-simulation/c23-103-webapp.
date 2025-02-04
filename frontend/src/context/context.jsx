@@ -33,10 +33,8 @@ const ContextProvider = ({children}) => {
             };
 
             try {
-                console.log("cargando conversas")
                 const conversations = await fetchConversations();
                 if (conversations) setUserConversations(conversations || []);
-                console.log("conversaciones cargadas", conversations);
             } catch (error) {
                 logout()
             }

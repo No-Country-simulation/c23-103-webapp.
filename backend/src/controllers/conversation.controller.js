@@ -82,12 +82,10 @@ const ConversationController = {
     },
 
     async updateConversation ({ unreadCount, isFavorite, lastMessage, conversationId }) {
-      console.log("llego al back", unreadCount, `hola${conversationId}`);
       try {
           const conversation = await Conversation.findOne({
               where: { id: conversationId }
           });
-          console.log("encontrado", conversation)
           if (!conversation) {
               return ({ message: 'Conversation not found' });
           }
@@ -98,7 +96,6 @@ const ConversationController = {
             isFavorite: isFavorite !== undefined ? isFavorite : conversation.isFavorite,
             lastMessage: lastMessage !== undefined ? lastMessage : conversation.lastMessage,
           });
-          console.log(updatedConversation)
           return updatedConversation;
       } catch (error) {
           console.error(error);
