@@ -15,3 +15,12 @@ export const fetchConversations = async () => {
         console.log("error", error)
     }
 };
+
+export const deleteConversation = async (conversationId) => {
+    try {
+        const response = await axios.delete(`${API_BASE}/conversations/${conversationId}`);
+        return response.data.conversations
+    } catch (error) {
+        console.log("error", error)
+    }
+};

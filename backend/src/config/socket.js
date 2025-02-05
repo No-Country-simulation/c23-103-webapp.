@@ -28,12 +28,17 @@ const setupSocket = (server) => {
     })
 
     socket.on("newConversation", () => {
+      io.emit("newConversation en el back")
       io.emit("updateConversation")
     })
 
     socket.on("resetNotifications", (conversationId) => {
       ConversationController.updateConversation({conversationId, unreadCount : "reset"})
       io.emit("notificacionReaded")
+    })
+
+    socket.on("deleteConversation", (conversationId) => {
+      io.emit("conversationDeleted")
     })
 
     socket.on('disconnect', () => {

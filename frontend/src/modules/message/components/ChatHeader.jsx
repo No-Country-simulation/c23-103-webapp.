@@ -1,14 +1,16 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { ChatModal } from "./ChatModal";
 import { AppContext } from "../../../context/context";
 import socket from "../../../core/utils/socket/socket";
+import { deleteConversation } from "../services/conversationsService";
 
 export const ChatHeader = ({ name, profileImage, idConversation }) => {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const { addCurrentConversation } = useContext(AppContext)
+  const navigate = useNavigate()
 
   const handleOpenChatModal = () => {
     setIsChatModalOpen(true);
@@ -20,6 +22,30 @@ export const ChatHeader = ({ name, profileImage, idConversation }) => {
 
   const handleModalAction = (action, conversationId) => {
     console.log(`Action: ${action}, Conversation ID: ${conversationId}`);
+    switch (action) {
+      case "silent":
+        // TODO: Iniciar una nueva conversación
+        break;
+      case "info":
+        // TODO: Eliminar la conversación
+        break;
+      case "bloquear":
+        // TODO: Eliminar la conversación
+        break;
+      case "favorito":
+        socket.emit("favorito",  {
+          conversationId : idConversation, 
+          isFavorite : true
+        })
+        break;
+      case "eliminar":
+        deleteConversation(idConversation);
+        socket.emit("deleteConversation", idConversation);
+        navigate(`/chats`)
+        break;
+      default:
+        break;
+    }
     handleCloseChatModal();
   };
 

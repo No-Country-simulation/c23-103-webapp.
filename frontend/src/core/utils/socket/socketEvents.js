@@ -1,6 +1,8 @@
+import { fetchConversations } from "../../../modules/message/services/conversationsService";
 import socket from "./socket";
 
 export const setupSocketListeners = (setConversations) => {
+    
     const updateLastMessage = (message) => {
         setConversations((prev) =>{
             const nuevitas =prev.map((conv) =>
@@ -17,7 +19,9 @@ export const setupSocketListeners = (setConversations) => {
     };
 
     const deleteConversation = (conversationId) => {
+        console.log("Deleting conversation", conversationId)
         setConversations((prev) => prev.filter((conv) => conv.id !== conversationId));
+
     };
 
     const updateConversation = (data) => {
@@ -28,10 +32,16 @@ export const setupSocketListeners = (setConversations) => {
         );
     };
 
+    const updateNewConversation = async() => {
+        const conversations = await fetchConversations()
+        setConversations(conversations);
+    };
+
     socket.on("newMessage", updateLastMessage);
     socket.on("contactAdded", addNewContact);
     socket.on("conversationDeleted", deleteConversation);
     socket.on("conversationUpdated", updateConversation);
+    socket.on("updateConversation", updateNewConversation);
 };
 
 export const removeSocketListeners = () => {
