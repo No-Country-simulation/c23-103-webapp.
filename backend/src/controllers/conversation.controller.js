@@ -114,7 +114,6 @@ const ConversationController = {
             }
         
             await conversation.destroy(); // Eliminar la conversación
-            console.log("conversation deleted", conversation)
             socket.emit("conversationDeleted", id);
             res.status(200).json({ message: 'Conversación eliminada con éxito.' });
           } catch (error) {

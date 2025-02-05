@@ -17,7 +17,6 @@ export const fetchConversations = async () => {
 };
 
 export const deleteConversation = async (conversationId) => {
-    console.log("success", conversationId)
     try {
         const response = await axios.delete(`${API_BASE}/conversations/${conversationId}`);
         return response.data.conversations

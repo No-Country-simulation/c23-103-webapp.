@@ -27,7 +27,6 @@ const ContextProvider = ({children}) => {
 
     useEffect(() => {
         const loadConversations = async () => {
-            console.log("usuarui", userInfo)
             if (Object.keys(userInfo).length === 0) {
                 setUserConversations([]);
                 return;

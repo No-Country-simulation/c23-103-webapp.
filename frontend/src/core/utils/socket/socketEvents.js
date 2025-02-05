@@ -34,7 +34,6 @@ export const setupSocketListeners = (setConversations) => {
 
     const updateNewConversation = async() => {
         const conversations = await fetchConversations()
-        console.log("Updating conversation final", conversations)
         setConversations(conversations);
     };
 

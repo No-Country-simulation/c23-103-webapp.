@@ -9,7 +9,6 @@ import { fetchMessages, sendMessage } from "../services/messageService";
 
 export const UserChat = () => {
   const {conversationId} = useParams()
-  console.log("paramos", conversationId)
   const navigate = useNavigate()
   const { userInfo, currentConversation, addCurrentConversation, userConversations} = useContext(AppContext);
 
@@ -21,9 +20,7 @@ export const UserChat = () => {
     // setIsLoading(true);
     // setError("");
     try {
-      console.log(" aqui!!!", currentConversation)
       const messages = await fetchMessages(currentConversation?.conversationId)
-      console.log("hay mensajes o no?", messages)
       setMessages(messages);
     } catch (err) {
       // setError(err.response?.data?.error || "Error al obtener los contactos");
@@ -33,7 +30,6 @@ export const UserChat = () => {
   useEffect(() => {
     fetchMessagesHandler()
     const handleUpdateMessages = () => {
-      console.log("carga de nuevo o no")
       fetchMessagesHandler();
   };
     socket.on('updateMessages', handleUpdateMessages);
@@ -57,12 +53,9 @@ export const UserChat = () => {
           ...currentConversation,
           conversationId: conversation.conversationId
         }
-        console.log("se supone que esto recarga", conversation)
         addCurrentConversation(contactInformacionChat);
-        console.log("ahora", contactInformacionChat, " se va a ", `/chats/${conversation.conversationId}`);
         navigate(`/chats/${conversation.conversationId}`);
       }
-      console.log ("emitimos", conversation.conversationId)
       socket.emit("sendMessage", {
         content,
         conversationId:conversation.conversationId
