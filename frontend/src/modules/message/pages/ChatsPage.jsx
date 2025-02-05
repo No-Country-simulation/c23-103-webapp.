@@ -22,7 +22,7 @@ export const ChatsPage = () => {
     const userInformation = async() => {
       let token = localStorage.getItem("token");
       let userId = localStorage.getItem("userId");
-      const response = await axios.get(`http://localhost:3001/api/users/${userId}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE}/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

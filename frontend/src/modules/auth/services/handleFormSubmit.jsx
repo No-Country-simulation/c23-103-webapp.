@@ -6,7 +6,7 @@ export const handleFormSubmit = async (values, formType) => {
     if (formType === "register") {
       try {
         const { data }  = await axios.post(
-          `http://localhost:3001/api/users/register`,
+          `${process.env.REACT_APP_API_BASE}/users/register`,
           {
             username: values.name,
             email: values.email,
@@ -27,7 +27,7 @@ export const handleFormSubmit = async (values, formType) => {
     } else if (formType === "login") {
       try {
         const { data } = await axios.post(
-          `http://localhost:3001/api/users/login`,
+          `${process.env.REACT_APP_API_BASE}/users/login`,
           {
             email: values.email,
             password: values.password,
