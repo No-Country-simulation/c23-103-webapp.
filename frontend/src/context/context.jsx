@@ -19,6 +19,7 @@ const ContextProvider = ({children}) => {
     
     const [currentConversation, setCurrentConversation] = useState({})
     const addCurrentConversation = (info) => {
+        console.log("cargamos nueva conversacion", info)
         setCurrentConversation(info)
     }
     

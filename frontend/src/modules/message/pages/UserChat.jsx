@@ -21,22 +21,27 @@ export const UserChat = () => {
     // setIsLoading(true);
     // setError("");
     try {
-      console.log(" aqui!!!", currentConversation?.conversationId)
-      const messages = await fetchMessages(conversationId)
+      console.log(" aqui!!!", currentConversation)
+      const messages = await fetchMessages(currentConversation?.conversationId)
+      console.log("hay mensajes o no?", messages)
       setMessages(messages);
     } catch (err) {
       // setError(err.response?.data?.error || "Error al obtener los contactos");
       console.log("error", err)
     }
-  }, []);
+  }, [currentConversation]);
   useEffect(() => {
     fetchMessagesHandler()
-    socket.on('updateMessages', fetchMessagesHandler);
+    const handleUpdateMessages = () => {
+      console.log("carga de nuevo o no")
+      fetchMessagesHandler();
+  };
+    socket.on('updateMessages', handleUpdateMessages);
 
     return () => {
-      socket.off('newMessage'); 
+      socket.off('updateMessages'); 
     };
-  },[])
+  },[fetchMessagesHandler])
 
   //! TODO: funcion para enviar mensajes
   const sendMessageHandler = useCallback(async (content) => {
@@ -52,9 +57,12 @@ export const UserChat = () => {
           ...currentConversation,
           conversationId: conversation.conversationId
         }
+        console.log("se supone que esto recarga", conversation)
         addCurrentConversation(contactInformacionChat);
+        console.log("ahora", contactInformacionChat, " se va a ", `/chats/${conversation.conversationId}`);
         navigate(`/chats/${conversation.conversationId}`);
       }
+      console.log ("emitimos", conversation.conversationId)
       socket.emit("sendMessage", {
         content,
         conversationId:conversation.conversationId

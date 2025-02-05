@@ -28,6 +28,7 @@ const setupSocket = (server) => {
     })
 
     socket.on("newConversation", () => {
+      io.emit("newConversation en el back")
       io.emit("updateConversation")
     })
 
