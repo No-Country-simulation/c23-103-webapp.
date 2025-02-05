@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { ChatModal } from "./ChatModal";
 import { AppContext } from "../../../context/context";
+import socket from "../../../core/utils/socket/socket";
 
-export const ChatHeader = ({ name, profileImage }) => {
+export const ChatHeader = ({ name, profileImage, idConversation }) => {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const { addCurrentConversation } = useContext(AppContext)
 
@@ -30,7 +31,10 @@ export const ChatHeader = ({ name, profileImage }) => {
         <Link
           to="/chats"
           className="inline-flex items-center hover:text-gray-200"
-          onClick={() => addCurrentConversation({})}
+          onClick={() => {
+            socket.emit("resetNotifications", idConversation)
+            addCurrentConversation({})
+          }}
         >
           <svg
             className="w-5 h-5"

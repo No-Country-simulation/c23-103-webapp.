@@ -1,4 +1,5 @@
 const socketIO = require('socket.io');
+const ConversationController = require('../controllers/conversation.controller');
 
 const setupSocket = (server) => {
   const io = socketIO(server, {
@@ -22,8 +23,17 @@ const setupSocket = (server) => {
     });
 
     socket.on("sendMessage", (data) => {
-      console.log("mensaje recibido", data)
       io.emit("newMessage", data)
+      io.emit("updateMessages")
+    })
+
+    socket.on("newConversation", () => {
+      io.emit("updateConversation")
+    })
+
+    socket.on("resetNotifications", (conversationId) => {
+      ConversationController.updateConversation({conversationId, unreadCount : "reset"})
+      io.emit("notificacionReaded")
     })
 
     socket.on('disconnect', () => {

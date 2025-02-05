@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { GroupBar } from "../components/GroupBar";
@@ -10,17 +10,14 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import AddContactModal from "../components/AddContactModal";
 import { AppContext } from "../../../context/context";
-import socket from "../../../core/utils/socket";
 
 export const ChatsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [openModalId, setOpenModalId] = useState(null);
-  const { addUserInfo, userConversations, addUserConversations, addCurrentConversation } = useContext(AppContext)
+  const { addUserInfo, userConversations, addCurrentConversation, currentConversation } = useContext(AppContext)
 
-  //! TODO: este estado gestiona los contactos, podria ser un estado global
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  //! TODO: llamamos a los contactos del usuario al cargar la página, (este useEffect es solo para que funcione por ahora, creo que seria mejor al iniciar sesion traer toda la informacion del usuario con sus contactos y conversaciones y traerlas del estado global)
   useEffect(() => {
     const userInformation = async() => {
       let token = localStorage.getItem("token");
@@ -34,33 +31,8 @@ export const ChatsPage = () => {
     }
     userInformation();
   }, []);
-  
-  const fetchConversations = useCallback(async () => {
-    
-    try {
-      if(!userConversations.length) {
-        let token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:3001/api/conversations/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        addUserConversations(res.data.conversations);
-      }
-    } catch (err) {
-      console.log("Error al obtener los contactos", err);
-    }
-  }, []);
-  
-  //! TODO: verificar la conexion del socket
-  useEffect(() => {
-    fetchConversations();
-    socket.on("newMesage", () => {
-      console.log("se ha recibido un nuevo mensaje")
-    })
-  }, [fetchConversations]);
 
-  const filteredConversations = userConversations.filter((conversation) => {
+  const filteredConversations = userConversations?.filter((conversation) => {
       switch (filter) {
         case "noLeidos":
           return conversation.unreadCount > 0;
@@ -84,7 +56,7 @@ export const ChatsPage = () => {
   };
 
   //! TODO: envia informacion a un estado
-  const handleConversationClick = (conversation) => {
+  const handleConversationClick = async (conversation) => {
     const contactInformacionChat = {
       conversationId: conversation.id,
       contactId: conversation.Users[0].id,
@@ -130,7 +102,7 @@ export const ChatsPage = () => {
         </div>
 
         <GroupBar onFilterChange={setFilter} />
-        {filteredConversations.length > 0 ? (
+        {filteredConversations?.length > 0 ? (
           filteredConversations.map((conversation) => (
             <li
               key={conversation.id}

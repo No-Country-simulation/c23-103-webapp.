@@ -4,12 +4,11 @@ const { Conversation, User } = require('../models');
 
 const ConversationController = {
     async createConversation ( {conversationName, userIds}) {
-      console.log("name", conversationName, "userids", userIds) 
         try {
             // Verificar que los usuarios existan
             const users = await User.findAll({ where: { id: userIds } });
             if (users.length !== userIds.length) {
-              return res.status(400).json({ error: 'Uno o más usuarios no existen.' });
+              throw Error ({ error: 'Uno o más usuarios no existen.' });
             }
         
             // Crear la conversación
@@ -17,11 +16,10 @@ const ConversationController = {
         
             // Asociar usuarios a la conversación
             await conversation.addUsers(userIds);
-            console.log("se creo", conversation)
-            res.status(201).json({ message: 'Conversación creada con éxito.', conversation });
+            return conversation ;
           } catch (error) {
             console.log(error.message)
-            res.status(500).json({ error: error.message });
+            throw Error ({ error: error.message });
           }
     },
     async getUserConversations (req, res) {
@@ -81,6 +79,28 @@ const ConversationController = {
           } catch (error) {
             res.status(500).json({ error: error.message });
           }
+    },
+
+    async updateConversation ({ unreadCount, isFavorite, lastMessage, conversationId }) {
+      try {
+          const conversation = await Conversation.findOne({
+              where: { id: conversationId }
+          });
+          if (!conversation) {
+              return ({ message: 'Conversation not found' });
+          }
+  
+          // Actualizamos solo los campos proporcionados
+          const updatedConversation = await conversation.update({
+            unreadCount: unreadCount === "reset" ? 0 : conversation.unreadCount +1,
+            isFavorite: isFavorite !== undefined ? isFavorite : conversation.isFavorite,
+            lastMessage: lastMessage !== undefined ? lastMessage : conversation.lastMessage,
+          });
+          return updatedConversation;
+      } catch (error) {
+          console.error(error);
+          return({ message: 'Internal server error' });
+      }
     },
 
     async deleteConversation (req, res) {
