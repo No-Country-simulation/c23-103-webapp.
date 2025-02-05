@@ -17,7 +17,7 @@ export const useCustomFormik = (initialValues, validationSchema, formType) => {
     onSubmit: async (values) => {
       const result = await handleFormSubmit(values, formType);
       console.log("%c result :", "background-color:#F6511D", result);
-      setFormResult({ success: result.success, userId: result.userId });
+      setFormResult({ success: result.success, userId: result.userInfo.id });
       setShowPopup(true);
     },
   });

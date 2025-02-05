@@ -14,6 +14,9 @@ import { StatusPage } from "./modules/message/pages/StatusPage";
 import { CallsPage } from "./modules/message/pages/CallsPage";
 import { SettingsPage } from "./modules/message/pages/SettingsPage";
 
+import socket from "./core/utils/socket/socket";
+import { useEffect } from "react";
+
 function App() {
   // Configuración de rutas
   const routes = [

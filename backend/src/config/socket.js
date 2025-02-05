@@ -1,4 +1,5 @@
 const socketIO = require('socket.io');
+const ConversationController = require('../controllers/conversation.controller');
 
 const setupSocket = (server) => {
   const io = socketIO(server, {
@@ -9,7 +10,8 @@ const setupSocket = (server) => {
   });
 
   io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+    const userId = socket.handshake.query.userId;
+    console.log(`Usuario conectado con ID: ${userId}`);
 
     socket.on('join_room', (roomId) => {
       socket.join(roomId);
@@ -20,8 +22,27 @@ const setupSocket = (server) => {
       io.to(data.roomId).emit('receive_message', data);
     });
 
+    socket.on("sendMessage", (data) => {
+      io.emit("newMessage", data)
+      io.emit("updateMessages")
+    })
+
+    socket.on("newConversation", () => {
+      io.emit("newConversation en el back")
+      io.emit("updateConversation")
+    })
+
+    socket.on("resetNotifications", (conversationId) => {
+      ConversationController.updateConversation({conversationId, unreadCount : "reset"})
+      io.emit("notificacionReaded")
+    })
+
+    socket.on("deleteConversation", (conversationId) => {
+      io.emit("conversationDeleted")
+    })
+
     socket.on('disconnect', () => {
-      console.log('User disconnected:', socket.id);
+      console.log('Usuario desconectado:', socket.id);
     });
   });
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { GroupBar } from "../components/GroupBar";
@@ -6,131 +6,65 @@ import { Navbar } from "../components/Navbar";
 import { ChatModal } from "../components/ChatModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import AddContactModal from "../components/AddContactModal";
+import { AppContext } from "../../../context/context";
 
 export const ChatsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [openModalId, setOpenModalId] = useState(null);
+  const { addUserInfo, userConversations, addCurrentConversation, currentConversation } = useContext(AppContext)
 
-  const conversations = [
-    {
-      id: "1",
-      name: "Juan Miranda",
-      lastMessage: "Hi, how are you?",
-      timestamp: "14:35",
-      unreadCount: 2,
-      isFavorite: false,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: "2",
-      name: "Team Work",
-      lastMessage: "Let's review the document.",
-      timestamp: "13:20",
-      unreadCount: 0,
-      isFavorite: false,
-      isGroup: true,
-      profileImage: "https://randomuser.me/api/portraits/lego/2.jpg",
-    },
-    {
-      id: "3",
-      name: "María Lucas",
-      lastMessage: "Thanks for the help!",
-      timestamp: "10:15",
-      unreadCount: 5,
-      isFavorite: true,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/women/3.jpg",
-    },
-    {
-      id: "4",
-      name: "Fernando León",
-      lastMessage: "Should I call you later?",
-      timestamp: "08:50",
-      unreadCount: 0,
-      isFavorite: false,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
-    {
-      id: "5",
-      name: "Alice Johnson",
-      lastMessage: "See you at the meeting.",
-      timestamp: "07:45",
-      unreadCount: 3,
-      isFavorite: false,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/women/5.jpg",
-    },
-    {
-      id: "6",
-      name: "Family Group",
-      lastMessage: "Don't forget the dinner tonight.",
-      timestamp: "06:30",
-      unreadCount: 1,
-      isFavorite: true,
-      isGroup: true,
-      profileImage: "https://randomuser.me/api/portraits/lego/3.jpg",
-    },
-    {
-      id: "7",
-      name: "Mark Peterson",
-      lastMessage: "I'll send you the details later.",
-      timestamp: "05:20",
-      unreadCount: 0,
-      isFavorite: false,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/men/7.jpg",
-    },
-    {
-      id: "8",
-      name: "Design Team",
-      lastMessage: "Can we finalize the colors today?",
-      timestamp: "03:10",
-      unreadCount: 4,
-      isFavorite: true,
-      isGroup: true,
-      profileImage: "https://randomuser.me/api/portraits/lego/4.jpg",
-    },
-    {
-      id: "9",
-      name: "Sophia Brown",
-      lastMessage: "The files are ready for review.",
-      timestamp: "01:00",
-      unreadCount: 0,
-      isFavorite: false,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/women/9.jpg",
-    },
-    {
-      id: "10",
-      name: "James Carter",
-      lastMessage: "Did you receive my email?",
-      timestamp: "00:45",
-      unreadCount: 2,
-      isFavorite: false,
-      isGroup: false,
-      profileImage: "https://randomuser.me/api/portraits/men/10.jpg",
-    },
-  ];
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  useEffect(() => {
+    const userInformation = async() => {
+      let token = localStorage.getItem("token");
+      let userId = localStorage.getItem("userId");
+      const response = await axios.get(`http://localhost:3001/api/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      addUserInfo(response.data);
+    }
+    userInformation();
+  }, []);
 
-  const filteredConversations = conversations
-    .filter((conversation) => {
+  const filteredConversations = userConversations?.filter((conversation) => {
       switch (filter) {
-        case "unRead":
+        case "noLeidos":
           return conversation.unreadCount > 0;
-        case "favorites":
+        case "favoritos":
           return conversation.isFavorite;
-        case "groups":
+        case "grupos":
           return conversation.isGroup;
         default:
-          return true;
+          return true; // Todos
       }
     })
     .filter((conversation) =>
-      conversation.name.toLowerCase().includes(searchQuery.toLowerCase())
+      conversation.Users.some((user) =>
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     );
+
+  //! TODO: boton que abre el modal pra mostrar y agregar contactos
+  const handleContactModal = () => {
+    setIsContactModalOpen(true);
+  };
+
+  //! TODO: envia informacion a un estado
+  const handleConversationClick = async (conversation) => {
+    const contactInformacionChat = {
+      conversationId: conversation.id,
+      contactId: conversation.Users[0].id,
+      username: conversation.Users[0].username,
+      profileImage: conversation.Users[0].profileImage,
+    }
+    addCurrentConversation(contactInformacionChat);
+  }
 
   const handleOpenModal = (id) => {
     setOpenModalId(id);
@@ -151,26 +85,43 @@ export const ChatsPage = () => {
         <h2 className="text-3xl text-white font-bold">Chats</h2>
       </div>
 
-      <ul className="bg-white text-gray-900 rounded-t-3xl p-4 mb-10">
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      {/* //! TODO: Arreglar boton para agregar contactost*/}
+
+      <ul className="bg-white text-gray-900 rounded-t-2xl p-4 mb-10">
+        <div className="flex justify-between p-0 w-100">
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+          <button
+            className="bg-violet-500 rounded-xl w-10 h-10 "
+            onClick={handleContactModal}
+          >
+            <FontAwesomeIcon className="text-white" icon={faPlus} />
+          </button>
+        </div>
+
         <GroupBar onFilterChange={setFilter} />
-        {filteredConversations.length > 0 ? (
+        {filteredConversations?.length > 0 ? (
           filteredConversations.map((conversation) => (
             <li
               key={conversation.id}
               className="flex items-center p-3 bg-violet-100 rounded-xl shadow-md mb-3"
             >
               <img
-                src={conversation.profileImage}
-                alt={conversation.name}
+                src={conversation.Users[0].profileImage}
+                alt={conversation.Users[0].username}
                 className="w-14 h-15 rounded-xl"
               />
               <div className="flex-grow ml-4">
                 <Link
-                  to={`/chats/${conversation.name}`}
+                  to={`/chats/${conversation.id}`}
                   className="flex justify-between text-violet-900"
+                  onClick={() => handleConversationClick(conversation)}
                 >
-                  <span className="font-semibold">{conversation.name}</span>
+                  <span className="font-semibold">
+                    {conversation.Users[0].username}
+                  </span>
                   <span className="text-gray-500 text-sm mx-3">
                     {conversation.timestamp}
                   </span>
@@ -217,6 +168,12 @@ export const ChatsPage = () => {
         onClose={handleCloseModal}
         onAction={handleAction}
         conversationId={openModalId}
+      />
+
+      {/* //! aqui se muestran los contactos y el input para agregar un contacto */}
+      <AddContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
       />
 
       <Navbar />

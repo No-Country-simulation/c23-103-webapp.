@@ -19,11 +19,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    status: {
+    profileImage: {
+      type: DataTypes.STRING,
+      defaultValue: 'https://cdn-icons-png.flaticon.com/512/7276/7276847.png',
+    },
+    active: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     }
   });
+
+  User.associate = (models) => {
+    User.belongsToMany(models.User, {
+      as: 'Contacts', // Este es el alias que usaremos para acceder a los contactos de un usuario
+      through: 'UserContacts', // Esta es la tabla intermedia que manejará la relación
+      foreignKey: 'userId',
+      otherKey: 'contactId',
+      timestamps: false, // Sin timestamps en la tabla intermedia
+    });
+  };
+  
   return User;
 };
 

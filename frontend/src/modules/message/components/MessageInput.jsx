@@ -1,8 +1,18 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPaperclip,
+  faFaceSmile,
+  faMicrophone,
+  faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
-export const MessageInput = () => {
+export const MessageInput = ({ sendMessage }) => {
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [file, setFile] = useState(null); // Estado para el archivo adjunto
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Mostrar/ocultar picker de emojis
+
+  const emojis = ["😀", "😂", "😍", "🥳", "😎", "🤔", "😭", "😡", "👍", "👎"]; // Lista de emojis
 
   const handleInputChange = (e) => {
     setMessage(e.target.value);
@@ -19,6 +29,7 @@ export const MessageInput = () => {
     if (message.trim()) {
       console.log("Mensaje enviado:", message);
       setMessage(""); // Limpiar el mensaje
+      sendMessage(message);
     }
     if (file) {
       console.log("Archivo enviado:", file.name);
@@ -30,64 +41,59 @@ export const MessageInput = () => {
     console.log("Nota de voz grabada");
   };
 
-  const handleAddSticker = () => {
-    console.log("Sticker añadido");
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+
+  const addEmojiToMessage = (emoji) => {
+    setMessage((prevMessage) => prevMessage + emoji);
+    setShowEmojiPicker(false); // Ocultar el picker al seleccionar un emoji
   };
 
   return (
-    <div className="p-4 bg-gray-100 flex items-center space-x-2">
+    <div className="p-2 bg-violet-500 flex items-center space-x-2 relative">
       {/* Botón para adjuntar archivos multimedia */}
-      <label className="text-gray-600 hover:text-gray-800 cursor-pointer" title="Adjuntar archivo">
-        <input
-          type="file"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 15l4.5-4.5m-4.5 4.5L7.5 10.5M18 16.5A2.5 2.5 0 0015.5 14V7.5A4.5 4.5 0 007 7.5v9A4.5 4.5 0 0011.5 21h6a2.5 2.5 0 002.5-2.5v-2z"
-          />
-        </svg>
+      <label
+        className="text-white hover:text-violet-900 cursor-pointer"
+        title="Adjuntar archivo"
+      >
+        <input type="file" className="hidden" onChange={handleFileChange} />
+        <FontAwesomeIcon icon={faPaperclip} className="w-5 h-5" />
       </label>
 
-      {/* Botón para agregar stickers */}
-      <button
-        onClick={handleAddSticker}
-        className="text-gray-600 hover:text-gray-800"
-        title="Agregar sticker"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-6 h-6"
+      {/* Botón para agregar stickers o emojis */}
+      <div className="relative">
+        <button
+          onClick={toggleEmojiPicker}
+          className="text-white hover:text-violet-900"
+          title="Agregar emoji"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M20.25 8.511l-7.5 7.5m0 0l-7.5-7.5m7.5 7.5V2.25"
-          />
-        </svg>
-      </button>
+          <FontAwesomeIcon icon={faFaceSmile} className="w-5 h-5" />
+        </button>
+
+        {/* Cuadro desplegable con emojis */}
+        {showEmojiPicker && (
+          <div className="absolute bottom-16 left-30 bg-white border border-gray-200 rounded-lg shadow-md p-5 grid grid-cols-6 gap-8 z-50">
+            {emojis.map((emoji, index) => (
+              <button
+                key={index}
+                onClick={() => addEmojiToMessage(emoji)}
+                className="text-xl flex items-center justify-center"
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Campo de entrada */}
       <input
         type="text"
         value={message}
         onChange={handleInputChange}
-        placeholder="Escribe un mensaje..."
-        className="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+        placeholder="Write your new message..."
+        className="text-gray-500 flex-grow p-2 border border-violet-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400"
       />
 
       {/* Mostrar nombre del archivo adjunto */}
@@ -101,44 +107,18 @@ export const MessageInput = () => {
       {message.trim() || file ? (
         <button
           onClick={handleSendMessage}
-          className="text-blue-600 hover:text-blue-800"
+          className="text-white hover:text-violet-900"
           title="Enviar mensaje"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 10l9 9 9-9-9-9-9 9zm0 0l9 9-9-9zm0 0l9-9 9 9-9-9z"
-            />
-          </svg>
+          <FontAwesomeIcon icon={faPaperPlane} className="w-5 h-5" />
         </button>
       ) : (
         <button
           onClick={handleSendVoiceNote}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-white hover:text-violet-900"
           title="Grabar nota de voz"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 3v10m0 0v4m0-4h-4m4 0h4"
-            />
-          </svg>
+          <FontAwesomeIcon icon={faMicrophone} className="w-5 h-5" />
         </button>
       )}
     </div>

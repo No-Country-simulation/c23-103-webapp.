@@ -3,28 +3,36 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: true,
     },
-    senderId: {
-      type: DataTypes.UUID,
-      allowNull: false
-    },
-    receiverId: {
-      type: DataTypes.UUID,
-      allowNull: false
-    },
-    groupId: {
-      type: DataTypes.UUID,
-      allowNull: true
-    }, // Null si es un mensaje privado
     content: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
     },
   });
+
   Message.associate = (models) => {
-    Message.belongsTo(models.User, { foreignKey: 'senderId' });
-    Message.belongsTo(models.User, { foreignKey: 'receiverId' });
+    // Relación con el remitente (sender)
+    Message.belongsTo(models.User, {
+      foreignKey: 'senderId',
+      as: 'sender',
+      onDelete: 'CASCADE',
+    });
+
+    // Relación con el receptor (receiver)
+    Message.belongsTo(models.User, {
+      foreignKey: 'receiverId',
+      as: 'receiver',
+      onDelete: 'CASCADE',
+    });
+
+    // Relación con la conversación
+    Message.belongsTo(models.Conversation, {
+      foreignKey: 'conversationId',
+      as: 'conversation',
+      onDelete: 'CASCADE',
+    });
   };
+
   return Message;
 };
