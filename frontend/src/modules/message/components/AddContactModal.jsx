@@ -19,7 +19,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3001/api/contacts/", {
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE}/contacts/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +53,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:3001/api/contacts/",
+        `${process.env.REACT_APP_API_BASE}/contacts/`,
         { email: newContact },
         {
           headers: {
