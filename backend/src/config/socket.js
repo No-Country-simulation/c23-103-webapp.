@@ -36,6 +36,10 @@ const setupSocket = (server) => {
       io.emit("notificacionReaded")
     })
 
+    socket.on("deleteConversation", (conversationId) => {
+      io.emit("conversationDeleted")
+    })
+
     socket.on('disconnect', () => {
       console.log('Usuario desconectado:', socket.id);
     });

@@ -26,6 +26,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      isBlocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      isSilenced: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
     });
   
     Conversation.associate = (models) => {

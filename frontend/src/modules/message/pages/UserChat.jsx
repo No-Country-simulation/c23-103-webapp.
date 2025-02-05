@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChatHeader } from "../components/ChatHeader";
 import { MessageInput } from "../components/MessageInput";
 import { MessageList } from "../components/MessageList";
@@ -8,6 +8,8 @@ import socket from "../../../core/utils/socket/socket";
 import { fetchMessages, sendMessage } from "../services/messageService";
 
 export const UserChat = () => {
+  const {conversationId} = useParams()
+  console.log("paramos", conversationId)
   const navigate = useNavigate()
   const { userInfo, currentConversation, addCurrentConversation, userConversations} = useContext(AppContext);
 
@@ -19,7 +21,8 @@ export const UserChat = () => {
     // setIsLoading(true);
     // setError("");
     try {
-      const messages = await fetchMessages(currentConversation.conversationId)
+      console.log(" aqui!!!", currentConversation?.conversationId)
+      const messages = await fetchMessages(conversationId)
       setMessages(messages);
     } catch (err) {
       // setError(err.response?.data?.error || "Error al obtener los contactos");

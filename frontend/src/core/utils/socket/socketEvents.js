@@ -1,6 +1,7 @@
 import socket from "./socket";
 
 export const setupSocketListeners = (setConversations) => {
+    
     const updateLastMessage = (message) => {
         setConversations((prev) =>{
             const nuevitas =prev.map((conv) =>
@@ -17,7 +18,9 @@ export const setupSocketListeners = (setConversations) => {
     };
 
     const deleteConversation = (conversationId) => {
+        console.log("Deleting conversation", conversationId)
         setConversations((prev) => prev.filter((conv) => conv.id !== conversationId));
+
     };
 
     const updateConversation = (data) => {

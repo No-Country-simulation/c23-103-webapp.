@@ -115,7 +115,7 @@ export const ChatsPage = () => {
               />
               <div className="flex-grow ml-4">
                 <Link
-                  to={`/chats/${conversation.Users[0].id}`}
+                  to={`/chats/${conversation.id}`}
                   className="flex justify-between text-violet-900"
                   onClick={() => handleConversationClick(conversation)}
                 >
