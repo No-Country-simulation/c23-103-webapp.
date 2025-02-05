@@ -133,7 +133,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
               {/* Input */}
               <div className="w-full pr-2">
                 <input
-                  type="text"
+                  type="email"
                   placeholder="Add new email"
                   value={newContact}
                   onChange={(e) => setNewContact(e.target.value)}
