@@ -19,7 +19,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:3001/api/contacts/", {
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE}/contacts/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +53,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:3001/api/contacts/",
+        `${process.env.REACT_APP_API_BASE}/contacts/`,
         { email: newContact },
         {
           headers: {
@@ -133,7 +133,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
               {/* Input */}
               <div className="w-full pr-2">
                 <input
-                  type="text"
+                  type="email"
                   placeholder="Add new email"
                   value={newContact}
                   onChange={(e) => setNewContact(e.target.value)}
