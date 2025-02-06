@@ -4,7 +4,7 @@ const ConversationController = require('../controllers/conversation.controller')
 const setupSocket = (server) => {
   const io = socketIO(server, {
     cors: {
-      origin: process.env.CLIENT_URL || "http://localhost:8080",
+      origin: process.env.CLIENT_URL || "http://localhost:3000",
       methods: ["GET", "POST"]
     }
   });
@@ -23,12 +23,12 @@ const setupSocket = (server) => {
     });
 
     socket.on("sendMessage", (data) => {
+      console.log("el bck emite newMessage y updateMessage")
       io.emit("newMessage", data)
       io.emit("updateMessages")
     })
 
     socket.on("newConversation", () => {
-      io.emit("newConversation en el back")
       io.emit("updateConversation")
     })
 
