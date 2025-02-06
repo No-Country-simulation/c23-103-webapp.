@@ -87,7 +87,7 @@ export const ChatsPage = () => {
 
       {/* //! TODO: Arreglar boton para agregar contactost*/}
 
-      <ul className="bg-white text-gray-900 rounded-t-2xl p-4 mb-10">
+      <ul className="bg-white text-gray-900 rounded-t-3xl p-4 mb-10">
         <div className="flex justify-between p-0 w-100">
           <SearchBar
             searchQuery={searchQuery}
