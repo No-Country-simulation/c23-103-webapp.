@@ -137,6 +137,27 @@ const UserController = {
       console.error(error);
       return res.status(500).json({ message: 'Error al actualizar el usuario' });
     }
+  },
+  
+  async deleteUser (req, res) {
+    try {
+      const { id } = req.params; // ID del usuario a eliminar
+  
+      // Buscar el usuario por ID
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      // Eliminar el usuario
+      await user.destroy();
+  
+      return res.json({ message: 'Usuario eliminado con éxito' });
+  
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Error al eliminar el usuario' });
+    }
   }
 };
 

@@ -4,7 +4,7 @@ import QRCode from "react-qr-code";
 import { Navbar } from "../components/Navbar";
 import { DeleteModal } from "../components/DeleteModal";
 import { AppContext } from "../../../context/context";
-import { updateUser } from "../../auth/services/userService";
+import { deleteUser, updateUser } from "../../auth/services/userService";
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
@@ -41,8 +41,10 @@ export const SettingsPage = () => {
     navigate("/login");
   };
 
-  const handleDeleteAccount = () => {
-    console.log("Account deleted"); // Aquí llamas a tu lógica para eliminar la cuenta
+  const handleDeleteAccount = async() => {
+    console.log("Account deleted");
+    await deleteUser(userInfo.id);
+    navigate("/login");
     setDeleteModalOpen(false);
   };
 
