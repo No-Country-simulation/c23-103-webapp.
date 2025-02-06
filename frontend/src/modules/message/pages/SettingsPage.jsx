@@ -5,6 +5,8 @@ import { Navbar } from "../components/Navbar";
 import { DeleteModal } from "../components/DeleteModal";
 import { AppContext } from "../../../context/context";
 import { deleteUser, updateUser } from "../../auth/services/userService";
+import axios from "axios";
+import { changeImage } from "../services/imageService";
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
@@ -19,14 +21,43 @@ export const SettingsPage = () => {
     password: "",
     newPassword: "",
   });
+  const [uploadImage, setUploadImage] = useState({})
 
-  const [showPassword, setShowPassword] = useState(false); // Estado para manejar visibilidad de la contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleChange = (event) => {
     const { id, value } = event.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setUploadImage(file)
+      setFormData((prev) => ({
+        ...prev,
+        profileImage: imageUrl,
+      }));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!uploadImage) return;
+
+    if (!(uploadImage instanceof File)) {
+      console.log("No es un archivo válido");
+      return;
+    }
+
+    const formDataImage = new FormData();
+    formDataImage.append('image', uploadImage);
+
+    const newImage = await changeImage(formDataImage)
+
+    setFormData((prev) => ({ ...prev, profileImage: newImage }))
   };
 
   const toggleQRCode = () => {
@@ -78,16 +109,7 @@ export const SettingsPage = () => {
                 accept="image/*"
                 id="profileImageInput"
                 className="hidden"
-                onChange={(event) => {
-                  const file = event.target.files[0];
-                  if (file) {
-                    const imageUrl = URL.createObjectURL(file);
-                    setFormData((prev) => ({
-                      ...prev,
-                      profileImage: imageUrl,
-                    }));
-                  }
-                }}
+                onChange={handleFileChange}
               />
               <button
                 className="bg-violet-500 text-white py-3 px-3 mt-4 rounded-2xl shadow-md"
@@ -96,6 +118,12 @@ export const SettingsPage = () => {
                 }
               >
                 Change Image
+              </button>
+              <button
+                className="bg-violet-500 text-white py-3 px-3 mt-4 rounded-2xl shadow-md"
+                onClick={handleUpload}
+              >
+                confirmar
               </button>
             </div>
           </div>

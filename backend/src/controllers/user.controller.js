@@ -8,7 +8,6 @@ const UserController = {
   async register(req, res) {
     try {
       const { username, email, password } = req.body;
-      console.log("req.body", req.body) // aquin esta
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
         return res.status(400).json({ error: 'El usuario ya existe' });
