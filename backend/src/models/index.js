@@ -10,7 +10,11 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize("postgresql://postgres:vkgZQEMLFvJsZWNqwIxNQuuLoLnTaLvF@monorail.proxy.rlwy.net:33718/railway", {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    logging: false, // Si deseas desactivar los logs de Sequelize
+  });
 }
 fs
   .readdirSync(__dirname)
