@@ -7,8 +7,8 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://luminchat.vercel.app/login'], // Los orígenes permitidos
-    methods: ['GET', 'POST'], // Métodos permitidos (opcional)
+    origin: ['http://localhost:3000', 'https://luminchat.vercel.app'], // Los orígenes permitidos
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos (opcional)
     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas (opcional)
   }));
 app.use(morgan('dev'));
