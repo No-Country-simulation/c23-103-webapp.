@@ -42,6 +42,7 @@ export const setupSocketListeners = (setConversations) => {
     socket.on("conversationDeleted", deleteConversation);
     socket.on("conversationUpdated", updateConversation);
     socket.on("updateConversation", updateNewConversation);
+    socket.on("uploadCompleted", updateNewConversation)
 };
 
 export const removeSocketListeners = () => {
