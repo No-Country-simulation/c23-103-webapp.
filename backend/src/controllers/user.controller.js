@@ -92,6 +92,51 @@ const UserController = {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
+  },
+
+  async updateUser (req, res) {
+    try {
+      const { userId, username, email, password, newPassword, profileImage, active, status } = req.body; // Datos a actualizar
+  
+      // Buscar el usuario por ID
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      // verificar password
+      if (password && newPassword) {
+          const isMatch = await bcrypt.compare(password, user.password); // Verificación con bcrypt
+          if (!isMatch) {
+              return res.status(400).json({ message: "La contraseña actual es incorrecta" });
+          }
+
+          if (password === newPassword) {
+              return res.status(400).json({ message: "La nueva contraseña no puede ser igual a la anterior" });
+          }
+
+          // Encriptar la nueva contraseña antes de guardarla
+          const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+          user.password = hashedPassword;
+      }
+  
+      // Actualizar el usuario con los datos proporcionados
+      await user.update({
+        username: username ?? user.username,
+        email: email ?? user.email,
+        profileImage: profileImage ?? user.profileImage,
+        active: active ?? user.active,
+        // status: status ?? user.status,
+      });
+
+      await user.save();
+  
+      return res.json({ message: 'Usuario actualizado con éxito', user });
+  
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Error al actualizar el usuario' });
+    }
   }
 };
 
