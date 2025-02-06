@@ -18,7 +18,7 @@ export const SettingsPage = () => {
     status: "Disponible",
     password: "",
     newPassword: "",
-  })
+  });
 
   const [showPassword, setShowPassword] = useState(false); // Estado para manejar visibilidad de la contraseña
   const [showQRCode, setShowQRCode] = useState(false);
@@ -48,9 +48,9 @@ export const SettingsPage = () => {
     setDeleteModalOpen(false);
   };
 
-  const handleUpdateInfo = async() => {
-    await updateUser(formData)
-  }
+  const handleUpdateInfo = async () => {
+    await updateUser(formData);
+  };
 
   // En tu JSX:
 
@@ -66,12 +66,38 @@ export const SettingsPage = () => {
         {/* Perfil */}
         <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
           <h3 className="text-xl font-semibold mb-4">Profile</h3>
-          <div className="flex items-left justify-left mb-4">
+          <div className="row items-left justify-left mb-4">
             <img
               src={formData.profileImage}
               alt="Foto de perfil"
               className="w-32 h-32 rounded-2xl object-cover border-violet-500"
             />
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                id="profileImageInput"
+                className="hidden"
+                onChange={(event) => {
+                  const file = event.target.files[0];
+                  if (file) {
+                    const imageUrl = URL.createObjectURL(file);
+                    setFormData((prev) => ({
+                      ...prev,
+                      profileImage: imageUrl,
+                    }));
+                  }
+                }}
+              />
+              <button
+                className="bg-violet-500 text-white py-3 px-3 mt-4 rounded-2xl shadow-md"
+                onClick={() =>
+                  document.getElementById("profileImageInput").click()
+                }
+              >
+                Change Image
+              </button>
+            </div>
           </div>
           <div className="mb-3">
             <label
@@ -130,7 +156,10 @@ export const SettingsPage = () => {
             />
           </div>
           <div className="w-50 mt-3 flex items-center justify-center">
-            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100" onClick={handleUpdateInfo}>
+            <button
+              className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100"
+              onClick={handleUpdateInfo}
+            >
               Update
             </button>
           </div>
@@ -192,7 +221,10 @@ export const SettingsPage = () => {
           </div>
 
           <div className="w-50 mt-3 flex items-center justify-center">
-            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100" onClick={handleUpdateInfo}>
+            <button
+              className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100"
+              onClick={handleUpdateInfo}
+            >
               Update
             </button>
           </div>
