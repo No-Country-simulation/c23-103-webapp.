@@ -7,6 +7,7 @@ import { AppContext } from "../../../context/context";
 import { deleteUser, updateUser } from "../../auth/services/userService";
 import axios from "axios";
 import { changeImage } from "../services/imageService";
+import socket from "../../../core/utils/socket/socket";
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ export const SettingsPage = () => {
     const newImage = await changeImage(formDataImage)
 
     setFormData((prev) => ({ ...prev, profileImage: newImage }))
+    socket.emit("upload")
   };
 
   const toggleQRCode = () => {

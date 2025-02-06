@@ -13,15 +13,6 @@ const setupSocket = (server) => {
     const userId = socket.handshake.query.userId;
     console.log(`Usuario conectado con ID: ${userId}`);
 
-    socket.on('join_room', (roomId) => {
-      socket.join(roomId);
-      console.log(`User ${socket.id} joined room ${roomId}`);
-    });
-
-    socket.on('send_message', (data) => {
-      io.to(data.roomId).emit('receive_message', data);
-    });
-
     socket.on("sendMessage", (data) => {
       console.log("el bck emite newMessage y updateMessage")
       io.emit("newMessage", data)
@@ -39,6 +30,10 @@ const setupSocket = (server) => {
 
     socket.on("deleteConversation", (conversationId) => {
       io.emit("conversationDeleted")
+    })
+
+    socket.on("upload", (conversationId) => {
+      io.emit("uploadCompleted")
     })
 
     socket.on('disconnect', () => {
