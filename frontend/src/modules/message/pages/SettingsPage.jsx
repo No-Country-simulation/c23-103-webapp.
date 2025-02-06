@@ -1,38 +1,32 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
 import { Navbar } from "../components/Navbar";
 import { DeleteModal } from "../components/DeleteModal";
+import { AppContext } from "../../../context/context";
+import { updateUser } from "../../auth/services/userService";
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
 
-  const [profilePic, setProfilePic] = useState(
-    "https://randomuser.me/api/portraits/men/1.jpg"
-  );
-  const [name, setName] = useState("Juan Miranda");
-  const [email] = useState("Juanmiranda@gmail.com");
-  const [status, setStatus] = useState("Disponible");
-  const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const { userInfo } = useContext(AppContext);
+  const [formData, setFormData] = useState({
+    userId: userInfo.id,
+    profileImage: userInfo.profileImage,
+    username: userInfo.username,
+    email: userInfo.email,
+    status: "Disponible",
+    password: "",
+    newPassword: "",
+  })
+
   const [showPassword, setShowPassword] = useState(false); // Estado para manejar visibilidad de la contraseña
   const [showQRCode, setShowQRCode] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleStatusChange = (event) => {
-    setStatus(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleNewPasswordChange = (event) => {
-    setNewPassword(event.target.value);
+  const handleChange = (event) => {
+    const { id, value } = event.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const toggleQRCode = () => {
@@ -52,6 +46,10 @@ export const SettingsPage = () => {
     setDeleteModalOpen(false);
   };
 
+  const handleUpdateInfo = async() => {
+    await updateUser(formData)
+  }
+
   // En tu JSX:
 
   return (
@@ -68,7 +66,7 @@ export const SettingsPage = () => {
           <h3 className="text-xl font-semibold mb-4">Profile</h3>
           <div className="flex items-left justify-left mb-4">
             <img
-              src={profilePic}
+              src={formData.profileImage}
               alt="Foto de perfil"
               className="w-32 h-32 rounded-2xl object-cover border-violet-500"
             />
@@ -82,8 +80,8 @@ export const SettingsPage = () => {
             </label>
             <select
               id="status"
-              value={status}
-              onChange={handleStatusChange}
+              value={formData.status}
+              onChange={handleChange}
               className="w-full p-4 border rounded-lg shadow-sm"
             >
               <option value="Disponible">Available</option>
@@ -107,9 +105,9 @@ export const SettingsPage = () => {
             </label>
             <input
               type="text"
-              id="name"
-              value={name}
-              onChange={handleNameChange}
+              id="username"
+              value={formData.username}
+              onChange={handleChange}
               className="w-full p-4 border rounded-lg shadow-sm"
               placeholder="Enter your name"
             />
@@ -124,13 +122,13 @@ export const SettingsPage = () => {
             <input
               type="text"
               id="email"
-              value={email}
+              value={formData.email}
               className="bg-white w-full p-4 border rounded-lg shadow-sm text-gray-400"
               disabled
             />
           </div>
           <div className="w-50 mt-3 flex items-center justify-center">
-            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100">
+            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100" onClick={handleUpdateInfo}>
               Update
             </button>
           </div>
@@ -150,8 +148,8 @@ export const SettingsPage = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
-                value={password}
-                onChange={handlePasswordChange}
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full p-4 border rounded-lg shadow-sm"
                 placeholder="Enter your current password"
               />
@@ -175,9 +173,9 @@ export const SettingsPage = () => {
             <div className="flex items-center">
               <input
                 type={showPassword ? "text" : "password"}
-                id="newpassword"
-                value={newPassword}
-                onChange={handleNewPasswordChange}
+                id="newPassword"
+                value={formData.newPassword}
+                onChange={handleChange}
                 className="w-full p-4 border rounded-lg shadow-sm"
                 placeholder="Enter your new password"
               />
@@ -192,7 +190,7 @@ export const SettingsPage = () => {
           </div>
 
           <div className="w-50 mt-3 flex items-center justify-center">
-            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100">
+            <button className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100" onClick={handleUpdateInfo}>
               Update
             </button>
           </div>
@@ -212,7 +210,7 @@ export const SettingsPage = () => {
 
           {showQRCode && (
             <div className="flex justify-center m-4">
-              <QRCode value={name} size={150} />
+              <QRCode value={formData.username} size={150} />
             </div>
           )}
         </div>
