@@ -10,3 +10,12 @@ export const updateUser = async (userData) => {
         console.log("error", error)
     }
 };
+
+export const deleteUser = async (userId) => {
+    try {
+        const response = await axios.delete(`${API_BASE}/users/${userId}`,);
+        return response.data
+    } catch (error) {
+        console.log("error", error)
+    }
+};
