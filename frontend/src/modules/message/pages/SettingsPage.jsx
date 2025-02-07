@@ -8,6 +8,7 @@ import { deleteUser, updateUser } from "../../auth/services/userService";
 import axios from "axios";
 import { changeImage } from "../services/imageService";
 import socket from "../../../core/utils/socket/socket";
+import Alert from "../../message/components/Alert";
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ export const SettingsPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [alert, setAlert] = useState(null);
+
 
   const handleChange = (event) => {
     const { id, value } = event.target;
@@ -46,22 +49,33 @@ export const SettingsPage = () => {
   };
 
   const handleUpload = async () => {
-    if (!uploadImage) return;
-
-    if (!(uploadImage instanceof File)) {
-      console.log("No es un archivo válido");
+    if (!uploadImage) {
+      setAlert({ message: "No attachment selected", type: "warning" });
       return;
     }
-
-    const formDataImage = new FormData();
-    formDataImage.append('image', uploadImage);
-
-    const newImage = await changeImage(formDataImage)
-
-    setFormData((prev) => ({ ...prev, profileImage: newImage }))
-    console.log("carga completa",newImage)
-    socket.emit("upload")
+  
+    if (!(uploadImage instanceof File)) {
+      setAlert({ message: "The file is not valid", type: "error" });
+      return;
+    }
+  
+    try {
+      const formDataImage = new FormData();
+      formDataImage.append("image", uploadImage);
+  
+      const newImage = await changeImage(formDataImage);
+  
+      setFormData((prev) => ({ ...prev, profileImage: newImage }));
+  
+      console.log("Carga completa", newImage);
+      socket.emit("upload");
+  
+      setAlert({ message: "Image upload successfull", type: "success" });
+    } catch (error) {
+      setAlert({ message: "Error to upload the image", type: "error" });
+    }
   };
+  
 
   const toggleQRCode = () => {
     setShowQRCode(!showQRCode);
@@ -83,7 +97,10 @@ export const SettingsPage = () => {
   };
 
   const handleUpdateInfo = async () => {
-    await updateUser(formData);
+
+      const response = await updateUser(formData)
+      console.log(response)
+
   };
 
   // En tu JSX:
@@ -96,15 +113,15 @@ export const SettingsPage = () => {
       </div>
 
       {/* Contenedor principal */}
-      <div className="bg-white text-violet-900 rounded-3xl p-4 shadow-lg">
+      <div className="bg-white text-violet-900 rounded-3xl p-3 shadow-lg">
         {/* Perfil */}
-        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+        <div className="mb-5 bg-violet-100 rounded-3xl shadow-md p-3">
           <h3 className="text-xl font-semibold mb-4">Profile</h3>
           <div className="row items-left justify-left mb-4">
             <img
               src={formData.profileImage}
               alt="Foto de perfil"
-              className="w-32 h-32 rounded-2xl object-cover border-violet-500"
+              className="w-40 h-40 rounded-3xl object-cover border border-violet-500"
             />
             <div>
               <input
@@ -115,7 +132,7 @@ export const SettingsPage = () => {
                 onChange={handleFileChange}
               />
               <button
-                className="bg-violet-500 text-white py-3 px-3 mt-4 rounded-2xl shadow-md"
+                className="bg-violet-500 text-white p-3 mt-4 rounded-3xl shadow-md"
                 onClick={() =>
                   document.getElementById("profileImageInput").click()
                 }
@@ -123,13 +140,15 @@ export const SettingsPage = () => {
                 Change Image
               </button>
               <button
-                className="bg-violet-500 text-white py-3 px-3 mt-4 rounded-2xl shadow-md"
+                className="bg-violet-500 text-white p-3  ml-2 mt-4 rounded-3xl shadow-md"
                 onClick={handleUpload}
               >
-                confirmar
+                Update
               </button>
             </div>
           </div>
+
+
           <div className="mb-3">
             <label
               className="block text-violet-700 font-medium mb-2"
@@ -141,7 +160,7 @@ export const SettingsPage = () => {
               id="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full p-4 border rounded-lg shadow-sm"
+              className="w-full p-3 border border-violet-400 rounded-3xl shadow-sm"
             >
               <option value="Disponible">Available</option>
               <option value="Away">Away</option>
@@ -153,7 +172,7 @@ export const SettingsPage = () => {
         </div>
 
         {/* Información del usuario */}
-        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+        <div className="mb-5 bg-violet-100 rounded-3xl shadow-md p-3">
           <h3 className="text-xl font-semibold mb-4">User Information</h3>
           <div className="mb-3">
             <label
@@ -167,7 +186,7 @@ export const SettingsPage = () => {
               id="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full p-4 border rounded-lg shadow-sm"
+              className="w-full p-3 border rounded-3xl shadow-sm"
               placeholder="Enter your name"
             />
           </div>
@@ -182,13 +201,13 @@ export const SettingsPage = () => {
               type="text"
               id="email"
               value={formData.email}
-              className="bg-white w-full p-4 border rounded-lg shadow-sm text-gray-400"
+              className="bg-white w-full p-3 border rounded-3xl shadow-sm text-gray-400"
               disabled
             />
           </div>
           <div className="w-50 mt-3 flex items-center justify-center">
             <button
-              className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100"
+              className="bg-violet-500 text-white p-3 rounded-3xl shadow-lg"
               onClick={handleUpdateInfo}
             >
               Update
@@ -197,7 +216,7 @@ export const SettingsPage = () => {
         </div>
 
         {/* Configuración de seguridad */}
-        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+        <div className="mb-5 bg-violet-100 rounded-3xl shadow-md p-3">
           <h3 className="text-xl font-semibold mb-4">Security</h3>
           <div className="mb-3 relative">
             <label
@@ -212,7 +231,7 @@ export const SettingsPage = () => {
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full p-4 border rounded-lg shadow-sm"
+                className="w-full p-3 border rounded-3xl shadow-sm"
                 placeholder="Enter your current password"
               />
               <button
@@ -238,7 +257,7 @@ export const SettingsPage = () => {
                 id="newPassword"
                 value={formData.newPassword}
                 onChange={handleChange}
-                className="w-full p-4 border rounded-lg shadow-sm"
+                className="w-full p-3 border rounded-3xl shadow-sm"
                 placeholder="Enter your new password"
               />
               <button
@@ -253,7 +272,7 @@ export const SettingsPage = () => {
 
           <div className="w-50 mt-3 flex items-center justify-center">
             <button
-              className="bg-violet-500 text-white py-2 px-6 rounded-2xl shadow-lg w-100"
+              className="bg-violet-500 text-white p-3 rounded-3xl shadow-lg w-100"
               onClick={handleUpdateInfo}
             >
               Update
@@ -262,12 +281,12 @@ export const SettingsPage = () => {
         </div>
 
         {/* Código QR */}
-        <div className="mb-5 bg-violet-100 rounded-xl shadow-md p-4">
+        <div className="mb-5 bg-violet-100 rounded-3xl shadow-md p-3">
           <h3 className="text-xl font-semibold mb-4">QR Code</h3>
           <div className="flex items-center justify-center">
             <button
               onClick={toggleQRCode}
-              className="bg-violet-500 text-white py-3 px-6 rounded-2xl shadow-lg w-50 mb-4"
+              className="bg-violet-500 text-white p-3 rounded-3xl shadow-lg w-50 mb-4"
             >
               {showQRCode ? "Hide QR Code" : "Share QR Code"}
             </button>
@@ -284,7 +303,7 @@ export const SettingsPage = () => {
           <div className="w-60">
             <button
               onClick={() => setDeleteModalOpen(true)}
-              className="bg-violet-900 text-white py-3 px-6 rounded-2xl shadow-lg w-full"
+              className="bg-violet-500 text-white p-3 rounded-3xl shadow-lg w-full"
             >
               Delete Account
             </button>
@@ -299,13 +318,21 @@ export const SettingsPage = () => {
           <div className="w-60">
             <button
               onClick={handleLogout}
-              className="bg-violet-500 text-white py-3 px-6 rounded-2xl shadow-lg w-full"
+              className="w-full py-3 text-center border border-primary text-primary rounded-3xl hover:bg-primary-dark hover:text-white hover:border-primary-dark transition duration-300"
             >
               Exit
             </button>
           </div>
         </div>
       </div>
+      {alert && (
+  <Alert
+    message={alert.message}
+    type={alert.type}
+    duration={3000}
+    onClose={() => setAlert(null)} // Ocultar alerta después de que se cierre
+  />
+)}
 
       <Navbar />
     </div>

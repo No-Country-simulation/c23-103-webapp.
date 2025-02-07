@@ -56,7 +56,7 @@ export const Popup = ({ onClose, success, UserId, formType }) => {
       <div className="mt-4 mb-4 flex justify-center">
         <button
           onClick={handleButtonClick}
-          className="w-button-medium bg-primary text-white py-buttonPadding rounded-2xl hover:bg-primary-dark transition duration-300"
+          className="w-button-medium bg-primary text-white py-buttonPadding rounded-3xl hover:bg-primary-dark transition duration-300"
         >
           {success ? "Ir a tu cuenta" : "Intentar nuevamente"}
         </button>
