@@ -9,6 +9,7 @@ import axios from "axios";
 import { changeImage } from "../services/imageService";
 import socket from "../../../core/utils/socket/socket";
 import Alert from "../../message/components/Alert";
+import Spinner from "../../message/components/Spinner"; // Asegúrate de importar correctamente
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
@@ -23,12 +24,13 @@ export const SettingsPage = () => {
     password: "",
     newPassword: "",
   });
-  const [uploadImage, setUploadImage] = useState({})
+  const [uploadImage, setUploadImage] = useState({});
 
   const [showPassword, setShowPassword] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (event) => {
     const { id, value } = event.target;
@@ -39,7 +41,7 @@ export const SettingsPage = () => {
     const file = event.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setUploadImage(file)
+      setUploadImage(file);
       setFormData((prev) => ({
         ...prev,
         profileImage: imageUrl,
@@ -52,26 +54,29 @@ export const SettingsPage = () => {
       setAlert({ message: "No attachment selected", type: "warning" });
       return;
     }
-  
+
     if (!(uploadImage instanceof File)) {
       setAlert({ message: "The file is not valid", type: "error" });
       return;
     }
-  
+
+    setIsUploading(true); // Mostrar el spinner
+
     try {
       const formDataImage = new FormData();
       formDataImage.append("image", uploadImage);
-  
+
       const newImage = await changeImage(formDataImage);
-  
+
       setFormData((prev) => ({ ...prev, profileImage: newImage }));
-  
       console.log("Carga completa", newImage);
       socket.emit("upload");
-  
-      setAlert({ message: "Image upload successfull", type: "success" });
+
+      setAlert({ message: "Image upload successful", type: "success" });
     } catch (error) {
       setAlert({ message: "Error to upload the image", type: "error" });
+    } finally {
+      setIsUploading(false); // Ocultar el spinner
     }
   };
 
@@ -87,7 +92,7 @@ export const SettingsPage = () => {
     navigate("/login");
   };
 
-  const handleDeleteAccount = async() => {
+  const handleDeleteAccount = async () => {
     console.log("Account deleted");
     await deleteUser(userInfo.id);
     navigate("/login");
@@ -95,27 +100,8 @@ export const SettingsPage = () => {
   };
 
   const handleUpdateInfo = async () => {
-    const response = await updateUser(formData)
-    if (response.status === 400) {
-      setAlert({
-        message: response.response.data.message,
-        type: "error",
-      })
-    } else {
-      setAlert({
-        message: response.data.message,
-        type: "success",
-      })
-    }
-    setFormData({
-      userId: userInfo.id,
-      profileImage: formData.profileImage,
-      username: formData.username,
-      email: userInfo.email,
-      status: "Disponible",
-      password: "",
-      newPassword: "",
-    })
+    const response = await updateUser(formData);
+    console.log(response);
   };
 
   // En tu JSX:
@@ -132,12 +118,20 @@ export const SettingsPage = () => {
         {/* Perfil */}
         <div className="mb-5 bg-violet-100 rounded-3xl shadow-md p-3">
           <h3 className="text-xl font-semibold mb-4">Profile</h3>
+          
+          
           <div className="row items-left justify-left mb-4">
-            <img
-              src={formData.profileImage}
-              alt="Foto de perfil"
-              className="w-40 h-40 rounded-3xl object-cover border border-violet-500"
-            />
+            {isUploading ? (
+              <div className="w-40 h-40 flex items-center justify-center">
+                <Spinner /> {/* ⬅ Aquí se usa el componente personalizado */}
+              </div>
+            ) : (
+              <img
+                src={formData.profileImage}
+                alt="Foto de perfil"
+                className="w-40 h-40 rounded-3xl object-cover border border-violet-500"
+              />
+            )}
             <div>
               <input
                 type="file"
@@ -155,13 +149,15 @@ export const SettingsPage = () => {
                 Change Image
               </button>
               <button
-                className="bg-violet-500 text-white p-3  ml-2 mt-4 rounded-3xl shadow-md"
+                className="bg-violet-500 text-white p-3 ml-2 mt-4 rounded-3xl shadow-md"
                 onClick={handleUpload}
+                disabled={isUploading}
               >
                 Update
               </button>
             </div>
           </div>
+
           <div className="mb-3">
             <label
               className="block text-violet-700 font-medium mb-2"
