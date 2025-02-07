@@ -31,6 +31,11 @@ const setupSocket = (server) => {
       io.emit("conversationDeleted")
     })
 
+    socket.on("favorito", (conversationId) => {
+      ConversationController.updateConversation({conversationId, isFavorite : "true"})
+      io.emit("isFavorite")
+    })
+
     socket.on("upload", () => {
       io.emit("uploadCompleted")
     })

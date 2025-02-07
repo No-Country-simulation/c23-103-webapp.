@@ -33,10 +33,7 @@ export const ChatHeader = ({ name, profileImage, idConversation }) => {
         // TODO: Eliminar la conversación
         break;
       case "favorito":
-        socket.emit("favorito",  {
-          conversationId : idConversation, 
-          isFavorite : true
-        })
+        socket.emit("favorito", idConversation)
         break;
       case "eliminar":
         deleteConversation(idConversation);

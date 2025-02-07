@@ -31,14 +31,16 @@ export const ChatsPage = () => {
     }
     userInformation();
   }, []);
-
+  
+  console.log(userConversations.map((conversation) => conversation.isFavorite))
+  console.log(filter)
   const filteredConversations = userConversations?.filter((conversation) => {
       switch (filter) {
-        case "noLeidos":
+        case "unRead":
           return conversation.unreadCount > 0;
-        case "favoritos":
+        case "favorites":
           return conversation.isFavorite;
-        case "grupos":
+        case "groups":
           return conversation.isGroup;
         default:
           return true; // Todos

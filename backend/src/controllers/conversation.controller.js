@@ -89,7 +89,7 @@ const ConversationController = {
           if (!conversation) {
               return ({ message: 'Conversation not found' });
           }
-  
+          console.log("actualizando en back", isFavorite)
           // Actualizamos solo los campos proporcionados
           const updatedConversation = await conversation.update({
             unreadCount: unreadCount === "reset" ? 0 : conversation.unreadCount +1,
