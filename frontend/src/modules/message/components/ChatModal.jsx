@@ -15,13 +15,13 @@ export const ChatModal = ({ isOpen, onClose, onAction, conversationId }) => {
           transition={{ duration: 0.1 }} // Duración de la animación
         >
           <motion.div
-            className="bg-violet-500 rounded-2xl pt-3"
+            className="bg-violet-500 rounded-3xl pt-3"
             initial={{ scale: 0.8 }} // Comienza más pequeño
             animate={{ scale: 1 }}   // Escala a su tamaño normal
             exit={{ scale: 0.9 }}    // Se reduce al salir
             transition={{ duration: 0.1 }} // Duración de la animación
           >
-            <div className="flex bg-violet-500 rounded-2xl justify-between pt-3">
+            <div className="flex bg-violet-500 rounded-3xl justify-between pt-0">
                 <h3 className="text-lg font-bold text-white m-5">Options</h3>
                 <button
                 onClick={onClose}

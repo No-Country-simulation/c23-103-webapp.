@@ -15,7 +15,7 @@ export const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
           transition={{ duration: 0.3 }}
         >
           <motion.div
-            className="bg-white rounded-2xl p-6 w-80 shadow-lg"
+            className="bg-white rounded-3xl p-6 w-80 shadow-lg"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.8 }}
@@ -31,13 +31,13 @@ export const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
               
               <button
                 onClick={onClose}
-                className="bg-violet-500 text-white px-4 py-2 rounded-lg"
+                className="bg-violet-500 text-white p-3 rounded-3xl"
               >
                 Cancel
               </button>
               <button
                 onClick={onConfirm}
-                className="bg-violet-900 text-white px-4 py-2 rounded-lg"
+                className="bg-violet-900 text-white p-3 rounded-3xl"
               >
                 Delete
               </button>

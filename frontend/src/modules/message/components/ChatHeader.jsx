@@ -82,7 +82,8 @@ export const ChatHeader = ({ name, profileImage, idConversation }) => {
         <img
           src={profileImage}
           alt={name}
-          className="w-10 h-10 rounded-2xl"
+          className="object-cover
+          size-20 rounded-3xl"
         />
 
         {/* Nombre de la persona/grupo */}

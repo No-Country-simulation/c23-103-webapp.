@@ -12,25 +12,25 @@ export const GroupBar = ({ onFilterChange }) => {
     <div className="flex space-x-4 pb-4">
       <button
         onClick={() => handleFilterChange("all")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "all" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
+        className={`flex-1 py-2 text-center ${selectedFilter === "all" ? "bg-violet-500 rounded-3xl text-white" : "text-violet-500"}`}
       >
         All
       </button>
       <button
         onClick={() => handleFilterChange("unRead")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "unRead" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
+        className={`flex-1 py-2 text-center ${selectedFilter === "unRead" ? "bg-violet-500 rounded-3xl text-white" : "text-violet-500"}`}
       >
         Unread
       </button>
       <button
         onClick={() => handleFilterChange("favorites")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "favorites" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
+        className={`flex-1 py-2 text-center ${selectedFilter === "favorites" ? "bg-violet-500 rounded-3xl text-white" : "text-violet-500"}`}
       >
         Favorites
       </button>
       <button
         onClick={() => handleFilterChange("groups")}
-        className={`flex-1 py-2 text-center ${selectedFilter === "groups" ? "bg-violet-500 rounded-xl text-white" : "text-violet-500"}`}
+        className={`flex-1 py-2 text-center ${selectedFilter === "groups" ? "bg-violet-500 rounded-3xl text-white" : "text-violet-500"}`}
       >
         Groups
       </button>

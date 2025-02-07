@@ -53,10 +53,13 @@ const ContextProvider = ({children}) => {
         setUserInfo(null);
     };
 
-
+    const unreadMessagesCount = userConversations?.reduce(
+        (acc, conversation) => acc + conversation.unreadCount,
+        0
+      );
 
     return(
-        <AppContext.Provider value={{ userInfo, addUserInfo, userConversations, userContacts, addUserContacts, currentConversation, addCurrentConversation, logout }}>
+        <AppContext.Provider value={{ userInfo, addUserInfo, userConversations, userContacts, addUserContacts, currentConversation, addCurrentConversation, logout, unreadMessagesCount}}>
             {children}
         </AppContext.Provider>
     )
