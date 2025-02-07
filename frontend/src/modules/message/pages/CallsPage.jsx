@@ -94,13 +94,13 @@ export const CallsPage = () => {
               {groupedCalls[date].map((call) => (
                 <li
                   key={call.id}
-                  className="flex items-center p-3 bg-violet-100 rounded-xl shadow-md"
+                  className="flex items-center p-3 bg-violet-100 rounded-3xl shadow-md"
                 >
                   {/* Foto de perfil */}
                   <img
                     src={call.profilePicture}
                     alt={call.name}
-                    className="w-14 h-15 rounded-xl"
+                    className="w-14 h-15 rounded-3xl"
                   />
                   {/* Detalles de la llamada */}
                   <div className="flex-grow ml-4">

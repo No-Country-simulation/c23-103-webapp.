@@ -15,26 +15,34 @@ export const ChatsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [openModalId, setOpenModalId] = useState(null);
-  const { addUserInfo, userConversations, addCurrentConversation, currentConversation } = useContext(AppContext)
-
+  const {
+    addUserInfo,
+    userConversations,
+    addCurrentConversation,
+    currentConversation,
+  } = useContext(AppContext);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  
+
   useEffect(() => {
-    const userInformation = async() => {
+    const userInformation = async () => {
       let token = localStorage.getItem("token");
       let userId = localStorage.getItem("userId");
-      const response = await axios.get(`${process.env.REACT_APP_API_BASE}/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/users/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       addUserInfo(response.data);
-    }
+    };
     userInformation();
   }, []);
-  
-  console.log(userConversations.map((conversation) => conversation.isFavorite))
-  console.log(filter)
-  const filteredConversations = userConversations?.filter((conversation) => {
+
+  const filteredConversations = userConversations
+    ?.filter((conversation) => {
       switch (filter) {
         case "unRead":
           return conversation.unreadCount > 0;
@@ -64,9 +72,9 @@ export const ChatsPage = () => {
       contactId: conversation.Users[0].id,
       username: conversation.Users[0].username,
       profileImage: conversation.Users[0].profileImage,
-    }
+    };
     addCurrentConversation(contactInformacionChat);
-  }
+  };
 
   const handleOpenModal = (id) => {
     setOpenModalId(id);
@@ -89,14 +97,14 @@ export const ChatsPage = () => {
 
       {/* //! TODO: Arreglar boton para agregar contactost*/}
 
-      <ul className="bg-white text-gray-900 rounded-t-2xl p-4 mb-10">
+      <ul className="bg-white text-gray-900 rounded-t-3xl p-4 mb-10">
         <div className="flex justify-between p-0 w-100">
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
           <button
-            className="bg-violet-500 rounded-xl w-10 h-10 "
+            className="bg-violet-500 rounded-3xl w-10 h-10 "
             onClick={handleContactModal}
           >
             <FontAwesomeIcon className="text-white" icon={faPlus} />
@@ -108,12 +116,13 @@ export const ChatsPage = () => {
           filteredConversations.map((conversation) => (
             <li
               key={conversation.id}
-              className="flex items-center p-3 bg-violet-100 rounded-xl shadow-md mb-3"
+              className="flex items-center p-2 bg-violet-100 rounded-3xl shadow-md mb-3"
             >
               <img
                 src={conversation.Users[0].profileImage}
                 alt={conversation.Users[0].username}
-                className="w-14 h-15 rounded-xl"
+                className="size-16 object-cover
+                rounded-3xl"
               />
               <div className="flex-grow ml-4">
                 <Link

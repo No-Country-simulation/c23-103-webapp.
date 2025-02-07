@@ -1,20 +1,32 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../../context/context";
 
 export const MessageList = ({ messages, senderImage, receiverImage }) => {
   const messagesEndRef = useRef(null);
+  const messageListRef = useRef(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
 
-  // Auto-scroll al último mensaje cuando cambien los mensajes
+  // Detectar si el usuario está en la parte inferior
+  const checkIfAtBottom = () => {
+    const bottom = messageListRef.current.scrollHeight === messageListRef.current.scrollTop + messageListRef.current.clientHeight;
+    setIsAtBottom(bottom);
+  };
+
+  // Auto-scroll al último mensaje cuando cambien los mensajes y el usuario está al final
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (isAtBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isAtBottom]);
 
   const { userInfo } = useContext(AppContext);
 
   return (
     <div
+      ref={messageListRef}
       className="flex-1 overflow-y-auto p-2 space-y-2"
       style={{ maxHeight: "calc(100vh - 150px)" }}
+      onScroll={checkIfAtBottom}
     >
       {messages &&
         messages.map((message, index) => (
@@ -32,12 +44,13 @@ export const MessageList = ({ messages, senderImage, receiverImage }) => {
                   : receiverImage
               }
               alt="User Avatar"
-              className="w-10 h-10 rounded-lg object-cover mx-2"
+              className="size-9 object-cover
+              rounded-3xl object-cover mx-2"
             />
 
             {/* Mensaje */}
             <div
-              className={`max-w-xs p-3 rounded-lg shadow-md flex ${
+              className={`max-w-xs p-3 rounded-3xl shadow-md flex ${
                 message.senderId !== `${userInfo.id}`
                   ? "bg-violet-200 text-gray-800"
                   : "bg-gray-200 text-gray-800"

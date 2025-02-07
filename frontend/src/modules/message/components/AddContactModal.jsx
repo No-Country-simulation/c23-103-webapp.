@@ -99,7 +99,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
           onClick={onClose}
         >
           <motion.div
-            className="bg-violet-500 rounded-2xl p-30"
+            className="bg-violet-500 rounded-3xl p-30"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.9 }}
@@ -108,7 +108,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
           >
             {/* Header */}
 
-            <div className="flex bg-violet-500 rounded-2xl justify-between pt-3">
+            <div className="flex bg-violet-500 rounded-3xl justify-between pt-3">
               <h3 className="text-lg font-bold text-white m-5">
                 Add new contact
               </h3>
@@ -121,10 +121,10 @@ const AddContactModal = ({ isOpen, onClose }) => {
             </div>
 
             {/* Body */}
-            <div className="bg-white rounded-2xl shadow-lg p-4">
+            <div className="bg-white rounded-3xl shadow-lg p-4">
               {/* Error Message */}
               {error && (
-                <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded-lg">
+                <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded-3xl">
                   {error}
                 </div>
               )}
@@ -137,7 +137,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
                   placeholder="Add new email"
                   value={newContact}
                   onChange={(e) => setNewContact(e.target.value)}
-                  className="w-full p-2 border rounded-xl border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                  className="w-full p-2 border rounded-3xl border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-400"
                   disabled={isLoading}
                 />
               </div>
@@ -146,7 +146,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
               <div className="">
                 <button
                   onClick={handleAddContact}
-                  className={`bg-violet-500 text-white px-4 py-2 rounded-xl hover:bg-violet-900 ${
+                  className={`bg-violet-500 text-white px-4 py-2 rounded-3xl hover:bg-violet-900 ${
                     isLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   disabled={isLoading}
@@ -166,7 +166,7 @@ const AddContactModal = ({ isOpen, onClose }) => {
                     {userContacts.map((contact, index) => (
                       <li
                         key={index}
-                        className="bg-violet-200 text-violet-900 p-2 rounded-lg flex items-center justify-between"
+                        className="bg-violet-200 text-violet-900 p-2 rounded-3xl flex items-center justify-between"
                       >
                           <button
                             onClick={() => handleContactClick(contact)}

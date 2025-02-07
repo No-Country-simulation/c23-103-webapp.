@@ -182,7 +182,7 @@ export const SettingsPage = () => {
               className="block text-violet-700 font-medium mb-2"
               htmlFor="status"
             >
-              Estado
+              Status
             </label>
             <select
               id="status"
@@ -222,7 +222,7 @@ export const SettingsPage = () => {
             <label
               className="block text-violet-700 font-medium mb-2"
               htmlFor="email"
-            >
+                          >
               E-mail
             </label>
             <input
@@ -231,6 +231,7 @@ export const SettingsPage = () => {
               value={formData.email}
               className="bg-white w-full p-3 border rounded-3xl shadow-sm text-gray-400"
               disabled
+              autoComplete="off"
             />
           </div>
           <div className="w-50 mt-3 flex items-center justify-center">

@@ -50,6 +50,13 @@ export const MessageInput = ({ sendMessage }) => {
     setShowEmojiPicker(false); // Ocultar el picker al seleccionar un emoji
   };
 
+  // Manejar el envío al presionar Enter
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && message.trim()) {
+      handleSendMessage();
+    }
+  };
+
   return (
     <div className="p-2 bg-violet-500 flex items-center space-x-2 relative">
       {/* Botón para adjuntar archivos multimedia */}
@@ -73,7 +80,7 @@ export const MessageInput = ({ sendMessage }) => {
 
         {/* Cuadro desplegable con emojis */}
         {showEmojiPicker && (
-          <div className="absolute bottom-16 left-30 bg-white border border-gray-200 rounded-lg shadow-md p-5 grid grid-cols-6 gap-8 z-50">
+          <div className="absolute bottom-16 left-30 bg-white border border-gray-200 rounded-3xl shadow-md p-5 grid grid-cols-6 gap-8 z-50">
             {emojis.map((emoji, index) => (
               <button
                 key={index}
@@ -92,8 +99,9 @@ export const MessageInput = ({ sendMessage }) => {
         type="text"
         value={message}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}  
         placeholder="Write your new message..."
-        className="text-gray-500 flex-grow p-2 border border-violet-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400"
+        className="text-gray-500 flex-grow p-2 border border-violet-200 rounded-3xl focus:outline-none focus:ring-1 focus:ring-violet-400"
       />
 
       {/* Mostrar nombre del archivo adjunto */}
