@@ -43,6 +43,7 @@ export const setupSocketListeners = (setConversations) => {
     socket.on("conversationUpdated", updateConversation);
     socket.on("updateConversation", updateNewConversation);
     socket.on("uploadCompleted", updateNewConversation)
+    socket.on("isFavorite", updateNewConversation)
 };
 
 export const removeSocketListeners = () => {

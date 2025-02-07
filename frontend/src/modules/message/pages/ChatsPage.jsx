@@ -58,7 +58,12 @@ export const ChatsPage = () => {
       conversation.Users.some((user) =>
         user.username.toLowerCase().includes(searchQuery.toLowerCase())
       )
+    )
+    .sort((a,b) => 
+      new Date (b.updatedAt) - new Date (a.updatedAt)
     );
+
+
 
   //! TODO: boton que abre el modal pra mostrar y agregar contactos
   const handleContactModal = () => {
