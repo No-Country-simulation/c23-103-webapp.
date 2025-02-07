@@ -96,6 +96,7 @@ const ConversationController = {
             isFavorite: isFavorite !== undefined ? isFavorite : conversation.isFavorite,
             lastMessage: lastMessage !== undefined ? lastMessage : conversation.lastMessage,
           });
+          await conversation.save();
           return updatedConversation;
       } catch (error) {
           console.error(error);

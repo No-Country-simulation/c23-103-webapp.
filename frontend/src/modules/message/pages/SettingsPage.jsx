@@ -59,6 +59,7 @@ export const SettingsPage = () => {
     const newImage = await changeImage(formDataImage)
 
     setFormData((prev) => ({ ...prev, profileImage: newImage }))
+    console.log("carga completa",newImage)
     socket.emit("upload")
   };
 

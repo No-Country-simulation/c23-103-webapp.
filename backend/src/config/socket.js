@@ -14,7 +14,6 @@ const setupSocket = (server) => {
     console.log(`Usuario conectado con ID: ${userId}`);
 
     socket.on("sendMessage", (data) => {
-      console.log("el bck emite newMessage y updateMessage")
       io.emit("newMessage", data)
       io.emit("updateMessages")
     })
@@ -28,11 +27,11 @@ const setupSocket = (server) => {
       io.emit("notificacionReaded")
     })
 
-    socket.on("deleteConversation", (conversationId) => {
+    socket.on("deleteConversation", () => {
       io.emit("conversationDeleted")
     })
 
-    socket.on("upload", (conversationId) => {
+    socket.on("upload", () => {
       io.emit("uploadCompleted")
     })
 
