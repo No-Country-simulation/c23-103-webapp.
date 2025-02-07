@@ -100,8 +100,27 @@ export const SettingsPage = () => {
   };
 
   const handleUpdateInfo = async () => {
-    const response = await updateUser(formData);
-    console.log(response);
+    const response = await updateUser(formData)
+    if (response.status === 400) {
+      setAlert({
+        message: response.response.data.message,
+        type: "error",
+      })
+    } else {
+      setAlert({
+        message: response.data.message,
+        type: "success",
+      })
+    }
+    setFormData({
+      userId: userInfo.id,
+      profileImage: formData.profileImage,
+      username: formData.username,
+      email: userInfo.email,
+      status: "Disponible",
+      password: "",
+      newPassword: "",
+    })
   };
 
   // En tu JSX:
